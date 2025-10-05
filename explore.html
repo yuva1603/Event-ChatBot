@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EventCraft AI – Explore</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: { colors: { primary: '#2563eb', secondary: '#64748b' } }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex">
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar" class="sidebar-expanded bg-white dark:bg-gray-800 shadow-lg border-r dark:border-gray-700 flex flex-col transition-all duration-300">
+    <div class="p-4 border-b dark:border-gray-700 flex items-center justify-between">
+      <div class="flex items-center">
+        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm">EA</div>
+        <span id="logoText" class="ml-3 text-lg font-bold text-gray-900 dark:text-white">Event Buddy bot</span>
+      </div>
+      <button id="sidebarToggle" class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="flex-1 p-4">
+      <ul class="space-y-2">
+        <li><div class="nav-item" onclick="navigateTo('dashboard.html')"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/></svg><span class="nav-text">Dashboard</span></div></li>
+        <li><div class="nav-item" onclick="navigateTo('event.html')"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span class="nav-text">Create Event</span></div></li>
+        <li><div class="nav-item" onclick="navigateTo('main.html')"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg><span class="nav-text">AI Chat</span></div></li>
+        <li><div class="nav-item nav-item-active" onclick="navigateTo('explore.html')"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg><span class="nav-text">Explore</span></div></li>
+      </ul>
+    </nav>
+    <div class="p-4 border-t dark:border-gray-700">
+      <div class="flex items-center">
+        <div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+        </div>
+        <div class="ml-3 nav-text">
+          <p class="text-sm font-medium text-gray-900 dark:text-white">Team Schedulynx</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Creator </p>
+        </div>
+      </div>
+      <button onclick="logout()" class="mt-3 w-full nav-item justify-center text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        <span class="nav-text">Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col">
+    <header class="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700 p-4">
+      <div>
+        <h1 class="text-xl font-bold text-gray-900 dark:text-white">Explore Events & Reviews</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Discover event types and real user success stories</p>
+      </div>
+    </header>
+    <main class="flex-1 overflow-y-auto p-6 space-y-12">
+      <!-- Event Types Grid -->
+      <section>
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Event Categories</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
+            <img src="images/marriage.webp" alt="Wedding" class="mx-auto mb-3 rounded-lg">
+            <h3 class="font-medium text-gray-900 dark:text-white">Marriage</h3>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
+            <img src="images/bday.jpg" alt="Birthday" class="mx-auto mb-3 rounded-lg">
+            <h3 class="font-medium text-gray-900 dark:text-white">Birthday</h3>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
+            <img src="images/corporate.jpg" alt="Corporate" class="mx-auto mb-3 rounded-lg">
+            <h3 class="font-medium text-gray-900 dark:text-white">Corporate</h3>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
+            <img src="images/babysh.jpeg" alt="Baby Shower" class="mx-auto mb-3 rounded-lg">
+            <h3 class="font-medium text-gray-900 dark:text-white">Baby Shower</h3>
+          </div>
+          <!-- Add more categories similarly -->
+        </div>
+      </section>
+
+      <!-- Success Reviews -->
+      <section>
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">User Success Stories</h2>
+        <div class="space-y-8">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col md:flex-row gap-6">
+            <img src="images/rv1.webp" alt="Review 1" class="w-full md:w-48 h-32 object-cover rounded-lg">
+            <div class="flex-1">
+              <p class="text-gray-700 dark:text-gray-300 mb-2">“EventCraft AI made planning my wedding effortless! The AI-designed mood board and budget breakdown saved me hours of work.”</p>
+              <p class="text-sm text-gray-500 dark:text-gray-500">— Mark Mams.</p>
+            </div>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col md:flex-row gap-6">
+            <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=300&q=80" alt="Review 2" class="w-full md:w-48 h-32 object-cover rounded-lg">
+            <div class="flex-1">
+              <p class="text-gray-700 dark:text-gray-300 mb-2">“The corporate event we hosted was seamless. AI-suggested vendor matching was spot-on!”</p>
+              <p class="text-sm text-gray-500 dark:text-gray-500">— Priya K.</p>
+            </div>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col md:flex-row gap-6">
+            <img src="https://images.unsplash.com/photo-1511988617509-a57c8a288659?auto=format&fit=crop&w=300&q=80" alt="Review 3" class="w-full md:w-48 h-32 object-cover rounded-lg">
+            <div class="flex-1">
+              <p class="text-gray-700 dark:text-gray-300 mb-2">“Loved the AI chat assistant—got instant decoration ideas and even a cake menu tailored to our theme.”</p>
+              <p class="text-sm text-gray-500 dark:text-gray-500">— Anjali S.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function navigateTo(page) { window.location.href = page; }
+    function logout() {
+      localStorage.removeItem('authToken');
+      window.location.href = 'login.html';
+    }
+    // Sidebar toggle (reuse script from other pages)
+    let collapsed = false;
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+      const sb = document.getElementById('sidebar');
+      const logoText = document.getElementById('logoText');
+      const navTexts = document.querySelectorAll('.nav-text');
+      collapsed = !collapsed;
+      sb.classList.toggle('sidebar-collapsed', collapsed);
+      sb.classList.toggle('sidebar-expanded', !collapsed);
+      logoText.classList.toggle('hidden', collapsed);
+      navTexts.forEach(t => t.classList.toggle('hidden', collapsed));
+    });
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

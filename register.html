@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EventCraft AI – Register</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { primary: '#2563eb' } } }
+    }
+  </script>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gray-100">
+  <div class="w-full max-w-md bg-white p-8 rounded shadow">
+    <h1 class="text-2xl font-bold mb-6 text-center">Create Your Account</h1>
+    <form id="registerForm" class="space-y-4">
+      <input name="name" type="text" placeholder="Full Name" required
+             class="w-full border px-3 py-2 rounded" />
+      <input name="email" type="email" placeholder="Email" required
+             class="w-full border px-3 py-2 rounded" />
+      <input name="password" type="password" placeholder="Password" required
+             class="w-full border px-3 py-2 rounded" />
+      <button type="submit" class="w-full bg-primary hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
+        Register
+      </button>
+    </form>
+    <p class="mt-4 text-center">
+      Already have an account?
+      <a href="login.html" class="text-blue-600 hover:underline">Login</a>
+    </p>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

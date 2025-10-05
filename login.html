@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EventCraft AI – Login</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Optional: customize Tailwind on the fly -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#2563eb',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gray-100" style="background-image:url(images/login3.jpg)">
+  <div class="w-full max-w-md bg-white p-8 rounded shadow">
+    <h1 class="text-2xl font-bold mb-6 text-center">Login to EventBuddy AI</h1>
+    <form id="loginForm" class="space-y-4">
+      <input name="email" type="email" placeholder="Email" required
+             class="w-full border px-3 py-2 rounded" />
+      <input name="password" type="password" placeholder="Password" required
+             class="w-full border px-3 py-2 rounded" />
+      <button type="submit" class="w-full bg-primary hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
+        <a href="main.html">Login</a>
+      </button>
+    </form>
+    
+    <!-- Social login section -->
+    <div class="mt-6">
+      <div class="relative">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-gray-300"></div>
+        </div>
+        <div class="relative flex justify-center text-sm">
+          <span class="px-2 bg-white text-gray-500">Or continue with</span>
+        </div>
+      </div>
+      
+      <div class="mt-4 grid grid-cols-3 gap-3">
+        <!-- Google -->
+        <a href="https://mail.google.com/mail/u/0/#inbox" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+          <span class="sr-only">Sign in with Google</span>
+          <i class="fab fa-google text-red-500"></i>
+        </a>
+        
+        <!-- Twitter -->
+        <a href="https://x.com/?lang=en" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+          <span class="sr-only">Sign in with Twitter</span>
+          <i class="fab fa-twitter text-blue-400"></i>
+        </a>
+        
+        <!-- Facebook -->
+        <a href="https://www.facebook.com/home.php" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+          <span class="sr-only">Sign in with Facebook</span>
+          <i class="fab fa-facebook-f text-blue-600"></i>
+        </a>
+      </div>
+    </div>
+    
+    <p class="mt-4 text-center">
+      Don't have an account?
+      <a href="register.html" class="text-blue-600 hover:underline">Register</a>
+    </p>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

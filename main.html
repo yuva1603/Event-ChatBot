@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EventCraft AI – Chat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { 
+        extend: { 
+          colors: { 
+            primary: '#2563eb',
+            secondary: '#64748b' 
+          } 
+        } 
+      }
+    }
+  </script>
+  <style>
+    .chat-img { max-width: 320px; max-height: 320px; border-radius: 0.5rem; }
+    #chatbox { scroll-behavior: smooth; }
+    .sender { justify-content: flex-end; }
+    .receiver { justify-content: flex-start; }
+    .sidebar-collapsed { width: 4rem; }
+    .sidebar-expanded { width: 16rem; }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex">
+  <!-- Sidebar -->
+  <aside id="sidebar" class="sidebar-expanded bg-white dark:bg-gray-800 shadow-lg border-r dark:border-gray-700 flex flex-col transition-all duration-300">
+    <!-- Logo -->
+    <div class="p-4 border-b dark:border-gray-700 flex items-center justify-between">
+      <div class="flex items-center">
+        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm">EA</div>
+        <span id="logoText" class="ml-3 text-lg font-bold text-gray-900 dark:text-white">EventCraft AI</span>
+      </div>
+      <button id="sidebarToggle" class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+    <!-- Nav -->
+    <nav class="flex-1 p-4">
+      <ul class="space-y-2">
+        <li>
+          <div class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer" onclick="navigateTo('dashboard.html')">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6a2 2 0 01-2 2H10a2 2 0 01-2-2V5z"/>
+            </svg>
+            <span class="nav-text">Dashboard</span>
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer" onclick="navigateTo('event.html')">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <span class="nav-text">Create Event</span>
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center px-4 py-3 bg-primary text-white rounded-lg transition-colors cursor-pointer" onclick="navigateTo('main.html')">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+            </svg>
+            <span class="nav-text">AI Chat</span>
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer" onclick="navigateTo('explore.html')">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <span class="nav-text">Explore</span>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <!-- User -->
+    <div class="p-4 border-t dark:border-gray-700">
+      <div class="flex items-center">
+        <div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+        <div class="ml-3 nav-text">
+          <p class="text-sm font-medium text-gray-900 dark:text-white">Team Schedulynx</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Premium +</p>
+        </div>
+      </div>
+      <button onclick="logout()" class="mt-3 w-full flex items-center justify-center px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+        </svg>
+        <span class="nav-text">Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700 p-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-xl font-bold text-gray-900 dark:text-white">AI Chat Assistant</h1>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Ask me anything about event planning</p>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+            <span class="text-sm text-gray-500 dark:text-gray-400">Online</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chat -->
+    <main class="flex-1 flex flex-col p-4">
+      <div class="flex-1 max-w-4xl mx-auto w-full flex flex-col">
+        <!-- Welcome -->
+        <div id="welcomeMessage" class="flex-1 flex items-center justify-center">
+          <div class="text-center max-w-md">
+            <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+              </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Welcome to EventCraft AI</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6">I'm here to help you plan amazing events! You can ask me about:</p>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg"><span class="text-blue-600 dark:text-blue-400">💰</span> Budget Planning</div>
+              <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg"><span class="text-green-600 dark:text-green-400">🎨</span> Decoration Ideas</div>
+              <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg"><span class="text-purple-600 dark:text-purple-400">🍽️</span> Menu Planning</div>
+              <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg"><span class="text-red-600 dark:text-red-400">📸</span> Event Visuals</div>
+            </div>
+          </div>
+        </div>
+        <!-- Chatbox -->
+        <div id="chatbox" class="hidden flex-1 overflow-y-auto bg-white dark:bg-gray-800 rounded-lg shadow border dark:border-gray-700 p-4 mb-4 space-y-4" style="min-height:400px; max-height: 60vh;"></div>
+        <!-- Input -->
+        <form id="chatInputForm" class="flex items-end gap-3 bg-white dark:bg-gray-800 p-4 rounded-lg shadow border dark:border-gray-700">
+          <textarea id="userInput" required rows="1" placeholder="Ask me anything about event planning…"
+            class="flex-1 px-4 py-3 resize-none border-0 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"></textarea>
+          <button type="submit"
+            class="bg-primary text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-blue-700 focus:ring-2 focus:ring-primary transition-colors flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>Send
+          </button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Sidebar toggle
+    let sidebarCollapsed = false;
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+      sidebarCollapsed = !sidebarCollapsed;
+      document.getElementById('sidebar').classList.toggle('sidebar-collapsed', sidebarCollapsed);
+      document.getElementById('sidebar').classList.toggle('sidebar-expanded', !sidebarCollapsed);
+      document.getElementById('logoText').classList.toggle('hidden', sidebarCollapsed);
+      document.querySelectorAll('.nav-text').forEach(el => el.classList.toggle('hidden', sidebarCollapsed));
+    });
+
+    function navigateTo(page) { window.location.href = page; }
+    function scrollChatToBottom() { setTimeout(() => { const c = document.getElementById('chatbox'); c.scrollTop = c.scrollHeight; }, 100); }
+    function toggleWelcomeMessage(show) {
+      document.getElementById('welcomeMessage').classList.toggle('hidden', !show);
+      document.getElementById('chatbox').classList.toggle('hidden', show);
+    }
+    async function getAIResponse(message) {
+      await new Promise(r => setTimeout(r, 800));
+      if (message.toLowerCase().includes('wedding')) {
+        return { type:'image', content:'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=400&q=80', caption:"Beautiful wedding setup" };
+      } else {
+        return { type:'text', content:"Here's some advice for your event planning!" };
+      }
+    }
+    function addMessageToChat(content, sender='user', caption='') {
+      const box=document.getElementById('chatbox');
+      const w=document.createElement('div');
+      w.className=`flex ${sender==='ai'?'justify-start':'justify-end'} mb-4`;
+      const msgClass= sender==='ai'?'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white':'bg-primary text-white';
+      w.innerHTML=`<div class="max-w-[75%] rounded-lg px-4 py-3 ${msgClass} whitespace-pre-line">${content}${caption?`<div class="text-xs opacity-75 mt-2">${caption}</div>`:''}</div>`;
+      box.appendChild(w);
+      scrollChatToBottom();
+    }
+    function addImageToChat(url, caption='') {
+      const box=document.getElementById('chatbox');
+      const w=document.createElement('div');
+      w.className='flex justify-start mb-4';
+      w.innerHTML=`<div class="max-w-[75%]"><img src="${url}" class="chat-img shadow-lg border border-gray-200 dark:border-gray-600 mb-2"><div class="text-sm text-gray-600 dark:text-gray-400 px-2">${caption}</div></div>`;
+      box.appendChild(w);
+      scrollChatToBottom();
+    }
+    let msgCount=0;
+    document.getElementById('chatInputForm').addEventListener('submit',async e=>{
+      e.preventDefault();
+      const inp=document.getElementById('userInput'), msg=inp.value.trim();
+      if(!msg) return;
+      if(msgCount===0) toggleWelcomeMessage(false);
+      msgCount++;
+      addMessageToChat(msg,'user');
+      inp.value=''; inp.style.height='auto';
+      const thinking=addMessageToChat('🤔 Thinking...','ai');
+      try{
+        const resp=await getAIResponse(msg);
+        document.querySelectorAll('.bg-gray-100').forEach(el=>{ if(el.textContent.includes('Thinking')) el.parentElement.remove(); });
+        if(resp.type==='text') addMessageToChat(resp.content,'ai');
+        else addImageToChat(resp.content,resp.caption);
+      }catch{
+        addMessageToChat('Error, please try again.','ai');
+      }
+    });
+    document.getElementById('userInput').addEventListener('input',function(){
+      this.style.height='auto'; this.style.height=this.scrollHeight+'px';
+    });
+    document.getElementById('userInput').focus();
+    function logout(){ localStorage.removeItem('authToken'); window.location.href='login.html'; }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
