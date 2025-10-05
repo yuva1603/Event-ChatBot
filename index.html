@@ -2,74 +2,271 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>EventCraft AI – Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EventBuddy AI – Professional Event Planning Platform</title>
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Optional: customize Tailwind on the fly -->
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#2563eb',
-          }
-        }
-      }
-    }
-  </script>
-</head>
-<body class="min-h-screen flex items-center justify-center bg-gray-100" style="background-image:url(images/login3.jpg)">
-  <div class="w-full max-w-md bg-white p-8 rounded shadow">
-    <h1 class="text-2xl font-bold mb-6 text-center">Login to EventBuddy AI</h1>
-    <form id="loginForm" class="space-y-4">
-      <input name="email" type="email" placeholder="Email" required
-             class="w-full border px-3 py-2 rounded" />
-      <input name="password" type="password" placeholder="Password" required
-             class="w-full border px-3 py-2 rounded" />
-      <button type="submit" class="w-full bg-primary hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
-        <a href="main.html">Login</a>
-      </button>
-    </form>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
     
-    <!-- Social login section -->
-    <div class="mt-6">
-      <div class="relative">
-        <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-gray-300"></div>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .login-card {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.9);
+    }
+    
+    .input-field {
+      transition: all 0.3s ease;
+    }
+    
+    .input-field:focus {
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 14px rgba(102, 126, 234, 0.3);
+    }
+    
+    .social-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .social-btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    .feature-icon {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+<body class="min-h-screen gradient-bg flex flex-col md:flex-row items-center justify-center p-4">
+  <!-- Left side - Branding and Features -->
+  <div class="w-full md:w-1/2 text-white p-8 md:p-12 lg:p-16">
+    <div class="max-w-lg mx-auto">
+      <div class="flex items-center mb-6">
+        <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center mr-3">
+          <i class="fas fa-calendar-check text-purple-600 text-xl"></i>
         </div>
-        <div class="relative flex justify-center text-sm">
-          <span class="px-2 bg-white text-gray-500">Or continue with</span>
+        <h1 class="text-2xl font-bold">EventBuddy AI</h1>
+      </div>
+      
+      <h2 class="text-4xl font-bold mb-6">Transform Your Events with AI-Powered Planning</h2>
+      <p class="text-lg mb-10 text-purple-100">From corporate conferences to intimate weddings, our AI platform helps you create unforgettable experiences with precision and ease.</p>
+      
+      <div class="space-y-6 mb-10">
+        <div class="flex items-start">
+          <div class="mr-4 mt-1">
+            <i class="fas fa-robot feature-icon text-xl"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg">AI Event Assistant</h3>
+            <p class="text-purple-100">Get personalized recommendations and automate tedious planning tasks.</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start">
+          <div class="mr-4 mt-1">
+            <i class="fas fa-chart-pie feature-icon text-xl"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg">Real-time Analytics</h3>
+            <p class="text-purple-100">Track event performance and attendee engagement with detailed insights.</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start">
+          <div class="mr-4 mt-1">
+            <i class="fas fa-users feature-icon text-xl"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg">Guest Management</h3>
+            <p class="text-purple-100">Seamlessly manage invitations, RSVPs, and attendee communications.</p>
+          </div>
         </div>
       </div>
       
-      <div class="mt-4 grid grid-cols-3 gap-3">
-        <!-- Google -->
-        <a href="https://mail.google.com/mail/u/0/#inbox" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-          <span class="sr-only">Sign in with Google</span>
-          <i class="fab fa-google text-red-500"></i>
-        </a>
-        
-        <!-- Twitter -->
-        <a href="https://x.com/?lang=en" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-          <span class="sr-only">Sign in with Twitter</span>
-          <i class="fab fa-twitter text-blue-400"></i>
-        </a>
-        
-        <!-- Facebook -->
-        <a href="https://www.facebook.com/home.php" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-          <span class="sr-only">Sign in with Facebook</span>
-          <i class="fab fa-facebook-f text-blue-600"></i>
-        </a>
+      <div class="bg-white/10 p-6 rounded-xl">
+        <p class="italic mb-4">"EventBuddy AI helped us reduce planning time by 40% while increasing attendee satisfaction scores. A game-changer for our corporate events!"</p>
+        <div class="flex items-center">
+          <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center mr-3">
+            <i class="fas fa-user text-white"></i>
+          </div>
+          <div>
+            <p class="font-bold">Jackson Thurai</p>
+            <p class="text-sm text-purple-100">Event Director, TechGlobal Inc.</p>
+          </div>
+        </div>
       </div>
     </div>
-    
-    <p class="mt-4 text-center">
-      Don't have an account?
-      <a href="register.html" class="text-blue-600 hover:underline">Register</a>
-    </p>
   </div>
-  <script src="app.js"></script>
+  
+  <!-- Right side - Login Form -->
+  <div class="w-full md:w-1/2 flex justify-center p-4">
+    <div class="login-card w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
+      <div class="p-8">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
+          <p class="text-gray-600">Sign in to your EventBuddy AI account</p>
+        </div>
+        
+        <form id="loginForm" class="space-y-6">
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-envelope text-gray-400"></i>
+              </div>
+              <input 
+                id="email" 
+                name="email" 
+                type="email" 
+                placeholder="Enter Your Email" 
+                required
+                class="input-field w-full border border-gray-300 pl-10 pr-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-lock text-gray-400"></i>
+              </div>
+              <input 
+                id="password" 
+                name="password" 
+                type="password" 
+                placeholder="Enter your password" 
+                required
+                class="input-field w-full border border-gray-300 pl-10 pr-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <input 
+                id="remember-me" 
+                name="remember-me" 
+                type="checkbox" 
+                class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+              />
+              <label for="remember-me" class="ml-2 block text-sm text-gray-700">Remember me</label>
+            </div>
+            
+            <div class="text-sm">
+              <a href="#" class="font-medium text-purple-600 hover:text-purple-500">Forgot password?</a>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn-primary w-full text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center">
+            <span>Sign In</span>
+            <i class="fas fa-arrow-right ml-2"></i>
+          </button>
+        </form>
+        
+        <!-- Social login section -->
+        <div class="mt-8">
+          <div class="relative">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-gray-300"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-3 bg-white text-gray-500">Or continue with</span>
+            </div>
+          </div>
+          
+          <div class="mt-6 grid grid-cols-3 gap-3">
+            <!-- Google -->
+            <a href="#" class="social-btn w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+              <span class="sr-only">Sign in with Google</span>
+              <i class="fab fa-google text-red-500"></i>
+            </a>
+            
+            <!-- Twitter -->
+            <a href="#" class="social-btn w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+              <span class="sr-only">Sign in with Twitter</span>
+              <i class="fab fa-twitter text-blue-400"></i>
+            </a>
+            
+            <!-- Facebook -->
+            <a href="#" class="social-btn w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+              <span class="sr-only">Sign in with Facebook</span>
+              <i class="fab fa-facebook-f text-blue-600"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mt-8 text-center">
+          <p class="text-gray-600">
+            Don't have an account?
+            <a href="register.html" class="font-medium text-purple-600 hover:text-purple-500 ml-1">Get started today</a>
+          </p>
+        </div>
+      </div>
+      
+      <div class="bg-gray-50 px-8 py-4 border-t border-gray-200">
+        <div class="flex items-center justify-between text-xs text-gray-500">
+          <div>
+            &copy; 2023 EventBuddy AI. All rights reserved.
+          </div>
+          <div class="flex space-x-4">
+            <a href="#" class="hover:text-gray-700">Privacy</a>
+            <a href="#" class="hover:text-gray-700">Terms</a>
+            <a href="#" class="hover:text-gray-700">Support</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      // Simple validation
+      if (!email || !password) {
+        alert('Please fill in all fields');
+        return;
+      }
+      
+      // In a real application, you would send this data to your server
+      console.log('Login attempt with:', { email, password });
+      
+      // Show loading state
+      const submitBtn = document.querySelector('#loginForm button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Signing In...';
+      submitBtn.disabled = true;
+      
+      // Simulate API call
+      setTimeout(() => {
+        // Redirect to dashboard (in a real app, this would happen after successful authentication)
+        window.location.href = 'main.html';
+      }, 1500);
+    });
+  </script>
 </body>
 </html>

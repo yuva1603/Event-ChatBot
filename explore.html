@@ -3,138 +3,796 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EventCraft AI – Explore</title>
+  <title>EventBuddy AI – Explore</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
-        extend: { colors: { primary: '#2563eb', secondary: '#64748b' } }
+        extend: { 
+          colors: { 
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            secondary: '#64748b' 
+          },
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
       }
     }
   </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .sidebar {
+      transition: all 0.3s ease;
+    }
+    
+    .sidebar.collapsed {
+      width: 5rem;
+    }
+    
+    .sidebar.expanded {
+      width: 16rem;
+    }
+    
+    .nav-item {
+      @apply flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer;
+    }
+    
+    .nav-item-active {
+      @apply bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300;
+    }
+    
+    .explore-card {
+      transition: all 0.3s ease;
+    }
+    
+    .explore-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .tab-active {
+      @apply bg-primary-600 text-white;
+    }
+    
+    .tab-inactive {
+      @apply bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600;
+    }
+    
+    .star-rating {
+      color: #fbbf24;
+    }
+    
+    .section {
+      display: none;
+    }
+    
+    .section.active {
+      display: block;
+    }
+  </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex">
   <!-- Sidebar Navigation -->
-  <aside id="sidebar" class="sidebar-expanded bg-white dark:bg-gray-800 shadow-lg border-r dark:border-gray-700 flex flex-col transition-all duration-300">
+  <aside class="sidebar expanded bg-white dark:bg-gray-800 shadow-lg border-r dark:border-gray-700 flex flex-col">
+    <!-- Logo -->
     <div class="p-4 border-b dark:border-gray-700 flex items-center justify-between">
       <div class="flex items-center">
-        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm">EA</div>
-        <span id="logoText" class="ml-3 text-lg font-bold text-gray-900 dark:text-white">Event Buddy bot</span>
+        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">EA</div>
+        <span id="logoText" class="ml-3 text-lg font-bold text-gray-900 dark:text-white">EventBuddy AI</span>
       </div>
       <button id="sidebarToggle" class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
         <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </button>
     </div>
+    
+    <!-- Navigation Menu -->
     <nav class="flex-1 p-4">
       <ul class="space-y-2">
-        <li><div class="nav-item" onclick="navigateTo('dashboard.html')"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/></svg><span class="nav-text">Dashboard</span></div></li>
-        <li><div class="nav-item" onclick="navigateTo('event.html')"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span class="nav-text">Create Event</span></div></li>
-        <li><div class="nav-item" onclick="navigateTo('main.html')"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg><span class="nav-text">AI Chat</span></div></li>
-        <li><div class="nav-item nav-item-active" onclick="navigateTo('explore.html')"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg><span class="nav-text">Explore</span></div></li>
+        <li>
+          <div class="nav-item" onclick="navigateTo('dashboard.html')">
+            <i class="fas fa-home text-gray-500 w-5 h-5 mr-3"></i>
+            <span class="nav-text">Home</span>
+          </div>
+        </li>
+        <li>
+          <div class="nav-item" onclick="navigateTo('events.html')">
+            <i class="fas fa-calendar-alt text-gray-500 w-5 h-5 mr-3"></i>
+            <span class="nav-text">Events</span>
+          </div>
+        </li>
+        <li>
+          <div class="nav-item nav-item-active" onclick="navigateTo('explore.html')">
+            <i class="fas fa-compass text-primary-600 dark:text-primary-400 w-5 h-5 mr-3"></i>
+            <span class="nav-text">Explore</span>
+          </div>
+        </li>
+        <li>
+          <div class="nav-item" onclick="navigateTo('ai-assistant.html')">
+            <i class="fas fa-robot text-gray-500 w-5 h-5 mr-3"></i>
+            <span class="nav-text">AI Assistant</span>
+          </div>
+        </li>
       </ul>
+      
+      <!-- Quick Actions -->
+      <div class="mt-8">
+        <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-4">Quick Actions</h3>
+        <ul class="space-y-2">
+          <li>
+            <a href="event.html" class="flex items-center px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+              <i class="fas fa-plus-circle text-green-500 w-4 h-4 mr-3"></i>
+              <span class="nav-text">New Event</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+              <i class="fas fa-users text-blue-500 w-4 h-4 mr-3"></i>
+              <span class="nav-text">Manage Guests</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+              <i class="fas fa-chart-bar text-purple-500 w-4 h-4 mr-3"></i>
+              <span class="nav-text">View Analytics</span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </nav>
+    
+    <!-- User Profile Section -->
     <div class="p-4 border-t dark:border-gray-700">
       <div class="flex items-center">
-        <div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
-          <svg class="w-4 h-4 text-gray-600 dark:text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+          TS
         </div>
         <div class="ml-3 nav-text">
           <p class="text-sm font-medium text-gray-900 dark:text-white">Team Schedulynx</p>
-          <p class="text-xs text-gray-500 dark:text-gray-400">Creator </p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Creator</p>
         </div>
       </div>
-      <button onclick="logout()" class="mt-3 w-full nav-item justify-center text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      <button id="logoutBtn" class="mt-3 w-full flex items-center justify-center px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors">
+        <i class="fas fa-sign-out-alt mr-2"></i>
         <span class="nav-text">Logout</span>
       </button>
     </div>
   </aside>
 
-  <!-- Main Content -->
-  <div class="flex-1 flex flex-col">
+  <!-- Main Content Area -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Top Navigation Bar -->
     <header class="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700 p-4">
-      <div>
-        <h1 class="text-xl font-bold text-gray-900 dark:text-white">Explore Events & Reviews</h1>
-        <p class="text-sm text-gray-500 dark:text-gray-400">Discover event types and real user success stories</p>
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-xl font-bold text-gray-900 dark:text-white">Explore Events & Reviews</h1>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Discover event types and real user success stories</p>
+        </div>
+        <div class="flex items-center space-x-6">
+          <!-- Dashboard Navigation Items -->
+          <div class="hidden md:flex items-center space-x-4">
+            <button id="chatHistoryBtn" class="flex items-center space-x-1 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+              <i class="fas fa-comments"></i>
+              <span>Chat History</span>
+            </button>
+            <button id="eventIdeasBtn" class="flex items-center space-x-1 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+              <i class="fas fa-lightbulb"></i>
+              <span>Event Ideas</span>
+            </button>
+            <button id="paymentHistoryBtn" class="flex items-center space-x-1 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+              <i class="fas fa-receipt"></i>
+              <span>Payments</span>
+            </button>
+          </div>
+          
+          <!-- User Profile with Dropdown -->
+          <div class="flex items-center space-x-3">
+            <div class="text-right hidden md:block">
+              <p class="text-sm font-medium text-gray-900 dark:text-white">Team Schedulynx</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Event Planner</p>
+            </div>
+            <div class="relative">
+              <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold cursor-pointer" id="profileMenuButton">
+                TS
+              </div>
+              <!-- Profile Dropdown (hidden by default) -->
+              <div id="profileMenu" class="hidden absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700 py-1 z-10">
+                <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b dark:border-gray-700">
+                  Account Settings
+                </div>
+                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <i class="fas fa-user mr-3 w-4 h-4"></i> Profile
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <i class="fas fa-cog mr-3 w-4 h-4"></i> Settings
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <i class="fas fa-comments mr-3 w-4 h-4"></i> Chat History
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <i class="fas fa-lightbulb mr-3 w-4 h-4"></i> Event Ideas
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <i class="fas fa-eye mr-3 w-4 h-4"></i> Ideas Viewed
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <i class="fas fa-receipt mr-3 w-4 h-4"></i> Payment History
+                </a>
+                <div class="border-t dark:border-gray-700 my-1"></div>
+                <a href="index.html" class="flex items-center px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900">
+                  <i class="fas fa-sign-out-alt mr-3 w-4 h-4"></i> Logout
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
-    <main class="flex-1 overflow-y-auto p-6 space-y-12">
-      <!-- Event Types Grid -->
-      <section>
-        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Event Categories</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
-            <img src="images/marriage.webp" alt="Wedding" class="mx-auto mb-3 rounded-lg">
-            <h3 class="font-medium text-gray-900 dark:text-white">Marriage</h3>
-          </div>
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
-            <img src="images/bday.jpg" alt="Birthday" class="mx-auto mb-3 rounded-lg">
-            <h3 class="font-medium text-gray-900 dark:text-white">Birthday</h3>
-          </div>
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
-            <img src="images/corporate.jpg" alt="Corporate" class="mx-auto mb-3 rounded-lg">
-            <h3 class="font-medium text-gray-900 dark:text-white">Corporate</h3>
-          </div>
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
-            <img src="images/babysh.jpeg" alt="Baby Shower" class="mx-auto mb-3 rounded-lg">
-            <h3 class="font-medium text-gray-900 dark:text-white">Baby Shower</h3>
-          </div>
-          <!-- Add more categories similarly -->
-        </div>
-      </section>
 
-      <!-- Success Reviews -->
-      <section>
-        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">User Success Stories</h2>
-        <div class="space-y-8">
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col md:flex-row gap-6">
-            <img src="images/rv1.webp" alt="Review 1" class="w-full md:w-48 h-32 object-cover rounded-lg">
-            <div class="flex-1">
-              <p class="text-gray-700 dark:text-gray-300 mb-2">“EventCraft AI made planning my wedding effortless! The AI-designed mood board and budget breakdown saved me hours of work.”</p>
-              <p class="text-sm text-gray-500 dark:text-gray-500">— Mark Mams.</p>
-            </div>
-          </div>
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col md:flex-row gap-6">
-            <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=300&q=80" alt="Review 2" class="w-full md:w-48 h-32 object-cover rounded-lg">
-            <div class="flex-1">
-              <p class="text-gray-700 dark:text-gray-300 mb-2">“The corporate event we hosted was seamless. AI-suggested vendor matching was spot-on!”</p>
-              <p class="text-sm text-gray-500 dark:text-gray-500">— Priya K.</p>
-            </div>
-          </div>
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col md:flex-row gap-6">
-            <img src="https://images.unsplash.com/photo-1511988617509-a57c8a288659?auto=format&fit=crop&w=300&q=80" alt="Review 3" class="w-full md:w-48 h-32 object-cover rounded-lg">
-            <div class="flex-1">
-              <p class="text-gray-700 dark:text-gray-300 mb-2">“Loved the AI chat assistant—got instant decoration ideas and even a cake menu tailored to our theme.”</p>
-              <p class="text-sm text-gray-500 dark:text-gray-500">— Anjali S.</p>
-            </div>
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-6">
+      <div class="max-w-7xl mx-auto">
+        <!-- Explore Navigation Tabs -->
+        <div class="mb-8">
+          <div class="flex flex-wrap gap-2">
+            <button id="reviewsTab" class="tab-active px-4 py-2 rounded-lg font-medium transition-colors" onclick="showSection('reviews')">
+              <i class="fas fa-star mr-2"></i> Reviews
+            </button>
+            <button id="otherEventsTab" class="tab-inactive px-4 py-2 rounded-lg font-medium transition-colors" onclick="showSection('otherEvents')">
+              <i class="fas fa-calendar-plus mr-2"></i> Other Events
+            </button>
+            <button id="vendorsTab" class="tab-inactive px-4 py-2 rounded-lg font-medium transition-colors" onclick="showSection('vendors')">
+              <i class="fas fa-store mr-2"></i> Vendors
+            </button>
+            <button id="customerReviewsTab" class="tab-inactive px-4 py-2 rounded-lg font-medium transition-colors" onclick="showSection('customerReviews')">
+              <i class="fas fa-comments mr-2"></i> Customer Reviews
+            </button>
           </div>
         </div>
-      </section>
+        
+        <!-- Reviews Section -->
+        <section id="reviews" class="section active">
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Event Categories</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 overflow-hidden shadow-sm">
+                <div class="h-40 bg-gradient-to-r from-pink-400 to-purple-500 flex items-center justify-center">
+                  <i class="fas fa-ring text-white text-4xl"></i>
+                </div>
+                <div class="p-4">
+                  <h3 class="font-bold text-gray-900 dark:text-white text-center">Wedding</h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 text-center mt-2">Create unforgettable moments</p>
+                </div>
+              </div>
+              
+              <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 overflow-hidden shadow-sm">
+                <div class="h-40 bg-gradient-to-r from-yellow-400 to-red-500 flex items-center justify-center">
+                  <i class="fas fa-birthday-cake text-white text-4xl"></i>
+                </div>
+                <div class="p-4">
+                  <h3 class="font-bold text-gray-900 dark:text-white text-center">Birthday</h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 text-center mt-2">Celebrate in style</p>
+                </div>
+              </div>
+              
+              <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 overflow-hidden shadow-sm">
+                <div class="h-40 bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center">
+                  <i class="fas fa-briefcase text-white text-4xl"></i>
+                </div>
+                <div class="p-4">
+                  <h3 class="font-bold text-gray-900 dark:text-white text-center">Corporate</h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 text-center mt-2">Professional and polished</p>
+                </div>
+              </div>
+              
+              <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 overflow-hidden shadow-sm">
+                <div class="h-40 bg-gradient-to-r from-green-400 to-teal-500 flex items-center justify-center">
+                  <i class="fas fa-baby text-white text-4xl"></i>
+                </div>
+                <div class="p-4">
+                  <h3 class="font-bold text-gray-900 dark:text-white text-center">Baby Shower</h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 text-center mt-2">Welcome new beginnings</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">User Success Stories</h2>
+            <div class="space-y-8">
+              <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 p-6 flex flex-col md:flex-row gap-6">
+                <div class="w-full md:w-48 h-48 bg-gradient-to-r from-purple-400 to-pink-500 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-heart text-white text-5xl"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center mb-4">
+                    <div class="star-rating">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                    </div>
+                    <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">5.0</span>
+                  </div>
+                  <p class="text-gray-700 dark:text-gray-300 mb-4 text-lg">"EventBuddy AI made planning my wedding effortless! The AI-designed mood board and budget breakdown saved me hours of work. Everything was perfectly executed."</p>
+                  <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                      MM
+                    </div>
+                    <div class="ml-3">
+                      <p class="font-medium text-gray-900 dark:text-white">Mark Mams</p>
+                      <p class="text-sm text-gray-500 dark:text-gray-400">Wedding Event</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 p-6 flex flex-col md:flex-row gap-6">
+                <div class="w-full md:w-48 h-48 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-chart-line text-white text-5xl"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center mb-4">
+                    <div class="star-rating">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">4.5</span>
+                  </div>
+                  <p class="text-gray-700 dark:text-gray-300 mb-4 text-lg">"The corporate event we hosted was seamless. AI-suggested vendor matching was spot-on! Our partners were impressed with the professional setup and attention to detail."</p>
+                  <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold">
+                      PK
+                    </div>
+                    <div class="ml-3">
+                      <p class="font-medium text-gray-900 dark:text-white">Priya K.</p>
+                      <p class="text-sm text-gray-500 dark:text-gray-400">Corporate Conference</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Other Events Section -->
+        <section id="otherEvents" class="section">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Unique Event Experiences</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 overflow-hidden shadow-sm">
+              <div class="h-48 bg-gradient-to-r from-purple-500 to-indigo-600 flex items-center justify-center relative">
+                <i class="fas fa-rocket text-white text-5xl"></i>
+                <span class="absolute top-4 right-4 bg-yellow-400 text-gray-900 px-3 py-1 rounded-full text-sm font-bold">NEW</span>
+              </div>
+              <div class="p-6">
+                <h3 class="font-bold text-xl text-gray-900 dark:text-white mb-2">Space Station Experience</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">Host your event in a simulated space environment with zero-gravity effects and astronaut guides.</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-primary-600 font-bold">Starting at $15,000</span>
+                  <button class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">Learn More</button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 overflow-hidden shadow-sm">
+              <div class="h-48 bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center">
+                <i class="fas fa-tree text-white text-5xl"></i>
+              </div>
+              <div class="p-6">
+                <h3 class="font-bold text-xl text-gray-900 dark:text-white mb-2">Enchanted Forest Theme Park</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">Transform any venue into a magical forest with interactive displays, fairy tale characters, and mystical lighting.</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-primary-600 font-bold">Starting at $8,500</span>
+                  <button class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">Learn More</button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 overflow-hidden shadow-sm">
+              <div class="h-48 bg-gradient-to-r from-blue-500 to-cyan-600 flex items-center justify-center">
+                <i class="fas fa-water text-white text-5xl"></i>
+              </div>
+              <div class="p-6">
+                <h3 class="font-bold text-xl text-gray-900 dark:text-white mb-2">Underwater Aquarium Events</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">Host events surrounded by marine life in premium aquarium venues with underwater tunnels and viewing areas.</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-primary-600 font-bold">Starting at $12,000</span>
+                  <button class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">Learn More</button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 overflow-hidden shadow-sm">
+              <div class="h-48 bg-gradient-to-r from-yellow-500 to-orange-600 flex items-center justify-center">
+                <i class="fas fa-paw text-white text-5xl"></i>
+              </div>
+              <div class="p-6">
+                <h3 class="font-bold text-xl text-gray-900 dark:text-white mb-2">Safari Zoo Adventure</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">Exclusive after-hours zoo events with guided safari tours, animal encounters, and conservation talks.</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-primary-600 font-bold">Starting at $7,500</span>
+                  <button class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">Learn More</button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 overflow-hidden shadow-sm">
+              <div class="h-48 bg-gradient-to-r from-red-500 to-pink-600 flex items-center justify-center">
+                <i class="fas fa-film text-white text-5xl"></i>
+              </div>
+              <div class="p-6">
+                <h3 class="font-bold text-xl text-gray-900 dark:text-white mb-2">Hollywood Red Carpet Premiere</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">Create a celebrity-style event with red carpet arrivals, paparazzi, and a private screening experience.</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-primary-600 font-bold">Starting at $10,000</span>
+                  <button class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">Learn More</button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 overflow-hidden shadow-sm">
+              <div class="h-48 bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center">
+                <i class="fas fa-theater-masks text-white text-5xl"></i>
+              </div>
+              <div class="p-6">
+                <h3 class="font-bold text-xl text-gray-900 dark:text-white mb-2">Medieval Castle Banquet</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">Step back in time with a royal castle theme, knight tournaments, medieval feasts, and court jesters.</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-primary-600 font-bold">Starting at $9,000</span>
+                  <button class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">Learn More</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Vendors Section -->
+        <section id="vendors" class="section">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Certified & Qualified Vendors</h2>
+          
+          <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl mb-8">
+            <div class="flex items-start">
+              <i class="fas fa-lightbulb text-blue-500 text-xl mt-1 mr-3"></i>
+              <div>
+                <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">Event Planning Tip</h3>
+                <p class="text-blue-700 dark:text-blue-400">Always verify vendor certifications and read recent reviews. Certified vendors typically have insurance, proper licenses, and follow industry standards, ensuring a smoother event experience with professional service quality.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 p-6">
+              <div class="flex items-start justify-between mb-4">
+                <div>
+                  <h3 class="font-bold text-xl text-gray-900 dark:text-white">Elite Catering Services</h3>
+                  <p class="text-gray-600 dark:text-gray-400">Downtown District</p>
+                </div>
+                <div class="flex items-center bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 px-3 py-1 rounded-full">
+                  <i class="fas fa-award mr-1"></i>
+                  <span class="text-sm font-medium">Certified</span>
+                </div>
+              </div>
+              <div class="flex items-center mb-4">
+                <div class="star-rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star-half-alt"></i>
+                </div>
+                <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">4.7 (128 reviews)</span>
+              </div>
+              <p class="text-gray-700 dark:text-gray-300 mb-4">Specializing in gourmet cuisine for corporate events and weddings. Menu customization available with dietary accommodations.</p>
+              <div class="flex items-center justify-between">
+                <span class="text-primary-600 font-bold">$$$</span>
+                <button class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">Contact Vendor</button>
+              </div>
+            </div>
+            
+            <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 p-6">
+              <div class="flex items-start justify-between mb-4">
+                <div>
+                  <h3 class="font-bold text-xl text-gray-900 dark:text-white">Royal Decor & Design</h3>
+                  <p class="text-gray-600 dark:text-gray-400">Uptown District</p>
+                </div>
+                <div class="flex items-center bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 px-3 py-1 rounded-full">
+                  <i class="fas fa-award mr-1"></i>
+                  <span class="text-sm font-medium">Certified</span>
+                </div>
+              </div>
+              <div class="flex items-center mb-4">
+                <div class="star-rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">5.0 (94 reviews)</span>
+              </div>
+              <p class="text-gray-700 dark:text-gray-300 mb-4">Transforming spaces with elegant floral arrangements, lighting, and thematic decor. Specializing in luxury weddings.</p>
+              <div class="flex items-center justify-between">
+                <span class="text-primary-600 font-bold">$$$$</span>
+                <button class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">Contact Vendor</button>
+              </div>
+            </div>
+            
+            <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 p-6">
+              <div class="flex items-start justify-between mb-4">
+                <div>
+                  <h3 class="font-bold text-xl text-gray-900 dark:text-white">SoundScape Audio Solutions</h3>
+                  <p class="text-gray-600 dark:text-gray-400">Midtown District</p>
+                </div>
+                <div class="flex items-center bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 px-3 py-1 rounded-full">
+                  <i class="fas fa-award mr-1"></i>
+                  <span class="text-sm font-medium">Certified</span>
+                </div>
+              </div>
+              <div class="flex items-center mb-4">
+                <div class="star-rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">5.0 (67 reviews)</span>
+              </div>
+              <p class="text-gray-700 dark:text-gray-300 mb-4">Professional audio equipment rental and setup for events of all sizes. DJ services and live sound engineering available.</p>
+              <div class="flex items-center justify-between">
+                <span class="text-primary-600 font-bold">$$</span>
+                <button class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">Contact Vendor</button>
+              </div>
+            </div>
+            
+            <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 p-6">
+              <div class="flex items-start justify-between mb-4">
+                <div>
+                  <h3 class="font-bold text-xl text-gray-900 dark:text-white">Capture Moments Photography</h3>
+                  <p class="text-gray-600 dark:text-gray-400">Riverside District</p>
+                </div>
+                <div class="flex items-center bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 px-3 py-1 rounded-full">
+                  <i class="fas fa-award mr-1"></i>
+                  <span class="text-sm font-medium">Certified</span>
+                </div>
+              </div>
+              <div class="flex items-center mb-4">
+                <div class="star-rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star-half-alt"></i>
+                </div>
+                <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">4.8 (203 reviews)</span>
+              </div>
+              <p class="text-gray-700 dark:text-gray-300 mb-4">Award-winning photography team specializing in event coverage. Delivering high-quality images with quick turnaround.</p>
+              <div class="flex items-center justify-between">
+                <span class="text-primary-600 font-bold">$$$</span>
+                <button class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">Contact Vendor</button>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Customer Reviews Section -->
+        <section id="customerReviews" class="section">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Customer Reviews & Feedback</h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 p-6">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold">
+                  AS
+                </div>
+                <div class="ml-4">
+                  <p class="font-medium text-gray-900 dark:text-white">Anjali S.</p>
+                  <div class="flex items-center">
+                    <div class="star-rating">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                    </div>
+                    <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">5.0</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-gray-700 dark:text-gray-300 mb-4">"Loved the AI chat assistant—got instant decoration ideas and even a cake menu tailored to our theme. The vendor recommendations were perfect matches for our budget and style."</p>
+              <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                <i class="fas fa-calendar mr-2"></i>
+                <span>Birthday Party • 2 weeks ago</span>
+              </div>
+            </div>
+            
+            <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 p-6">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-full flex items-center justify-center text-white font-bold">
+                  RK
+                </div>
+                <div class="ml-4">
+                  <p class="font-medium text-gray-900 dark:text-white">Rahul K.</p>
+                  <div class="flex items-center">
+                    <div class="star-rating">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">4.5</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-gray-700 dark:text-gray-300 mb-4">"The corporate retreat planning was seamless. The AI suggested team-building activities that our employees actually enjoyed! Budget tracking feature saved us 15% on overall costs."</p>
+              <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                <i class="fas fa-calendar mr-2"></i>
+                <span>Corporate Retreat • 1 month ago</span>
+              </div>
+            </div>
+            
+            <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 p-6">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold">
+                  SM
+                </div>
+                <div class="ml-4">
+                  <p class="font-medium text-gray-900 dark:text-white">Sophia M.</p>
+                  <div class="flex items-center">
+                    <div class="star-rating">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                    </div>
+                    <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">5.0</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-gray-700 dark:text-gray-300 mb-4">"Our wedding was absolutely perfect! The timeline created by EventBuddy AI ensured everything ran smoothly. The vendor coordination feature eliminated all the stress I was dreading."</p>
+              <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                <i class="fas fa-calendar mr-2"></i>
+                <span>Wedding • 3 months ago</span>
+              </div>
+            </div>
+            
+            <div class="explore-card bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 p-6">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full flex items-center justify-center text-white font-bold">
+                  DJ
+                </div>
+                <div class="ml-4">
+                  <p class="font-medium text-gray-900 dark:text-white">David J.</p>
+                  <div class="flex items-center">
+                    <div class="star-rating">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                    </div>
+                    <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">5.0</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-gray-700 dark:text-gray-300 mb-4">"As an event planner myself, I'm impressed with the AI capabilities. The budget optimization feature alone is worth the subscription. It helped me identify cost savings I hadn't considered."</p>
+              <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                <i class="fas fa-calendar mr-2"></i>
+                <span>Product Launch • 2 weeks ago</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-8 text-center">
+            <button class="bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors font-medium">
+              <i class="fas fa-plus mr-2"></i> Load More Reviews
+            </button>
+          </div>
+        </section>
+      </div>
     </main>
   </div>
 
   <script>
-    function navigateTo(page) { window.location.href = page; }
-    function logout() {
-      localStorage.removeItem('authToken');
-      window.location.href = 'index.html';
-    }
-    // Sidebar toggle (reuse script from other pages)
-    let collapsed = false;
-    document.getElementById('sidebarToggle').addEventListener('click', () => {
-      const sb = document.getElementById('sidebar');
-      const logoText = document.getElementById('logoText');
-      const navTexts = document.querySelectorAll('.nav-text');
-      collapsed = !collapsed;
-      sb.classList.toggle('sidebar-collapsed', collapsed);
-      sb.classList.toggle('sidebar-expanded', !collapsed);
-      logoText.classList.toggle('hidden', collapsed);
-      navTexts.forEach(t => t.classList.toggle('hidden', collapsed));
+    // DOM Elements
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const logoText = document.getElementById('logoText');
+    const navTexts = document.querySelectorAll('.nav-text');
+    const profileMenuButton = document.getElementById('profileMenuButton');
+    const profileMenu = document.getElementById('profileMenu');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const tabs = document.querySelectorAll('button[onclick^="showSection"]');
+    
+    // Sidebar Toggle
+    let sidebarCollapsed = false;
+    sidebarToggle.addEventListener('click', () => {
+      sidebarCollapsed = !sidebarCollapsed;
+      sidebar.classList.toggle('collapsed', sidebarCollapsed);
+      sidebar.classList.toggle('expanded', !sidebarCollapsed);
+      logoText.classList.toggle('hidden', sidebarCollapsed);
+      navTexts.forEach(el => el.classList.toggle('hidden', sidebarCollapsed));
     });
+    
+    // Profile Menu Toggle
+    profileMenuButton.addEventListener('click', () => {
+      profileMenu.classList.toggle('hidden');
+    });
+    
+    // Close profile menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!profileMenuButton.contains(e.target) && !profileMenu.contains(e.target)) {
+        profileMenu.classList.add('hidden');
+      }
+    });
+    
+    // Navigation function
+    function navigateTo(page) {
+      window.location.href = page;
+    }
+    
+    // Logout function
+    logoutBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to logout?')) {
+        window.location.href = 'index.html';
+      }
+    });
+    
+    // Dashboard navigation buttons
+    document.getElementById('chatHistoryBtn').addEventListener('click', () => {
+      alert('Chat History page would open here');
+    });
+    
+    document.getElementById('eventIdeasBtn').addEventListener('click', () => {
+      alert('Event Ideas page would open here');
+    });
+    
+    document.getElementById('paymentHistoryBtn').addEventListener('click', () => {
+      alert('Payment History page would open here');
+    });
+    
+    // Section switching functionality
+    function showSection(sectionId) {
+      // Hide all sections
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+      });
+      
+      // Show selected section
+      document.getElementById(sectionId).classList.add('active');
+      
+      // Update tab styles
+      tabs.forEach(tab => {
+        if (tab.id === `${sectionId}Tab`) {
+          tab.classList.remove('tab-inactive');
+          tab.classList.add('tab-active');
+        } else {
+          tab.classList.remove('tab-active');
+          tab.classList.add('tab-inactive');
+        }
+      });
+    }
   </script>
-  <script src="app.js"></script>
 </body>
 </html>

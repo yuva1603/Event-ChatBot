@@ -2,33 +2,639 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>EventCraft AI – Register</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EventBuddy AI – Professional Registration</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
     tailwind.config = {
-      theme: { extend: { colors: { primary: '#2563eb' } } }
+      theme: { 
+        extend: { 
+          colors: { 
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            }
+          },
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', 'sans-serif'],
+          }
+        } 
+      }
     }
   </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .registration-card {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.95);
+    }
+    
+    .input-field {
+      transition: all 0.3s ease;
+    }
+    
+    .input-field:focus {
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 14px rgba(102, 126, 234, 0.3);
+    }
+    
+    .form-step {
+      display: none;
+    }
+    
+    .form-step.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .progress-bar {
+      height: 6px;
+      border-radius: 3px;
+      overflow: hidden;
+      background-color: #e5e7eb;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.5s ease;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .checkbox-container {
+      display: block;
+      position: relative;
+      padding-left: 35px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      font-size: 16px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    
+    .checkbox-container input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+    
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 25px;
+      width: 25px;
+      background-color: #f3f4f6;
+      border-radius: 6px;
+      border: 2px solid #d1d5db;
+    }
+    
+    .checkbox-container:hover input ~ .checkmark {
+      background-color: #e5e7eb;
+    }
+    
+    .checkbox-container input:checked ~ .checkmark {
+      background-color: #2563eb;
+      border-color: #2563eb;
+    }
+    
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+    
+    .checkbox-container input:checked ~ .checkmark:after {
+      display: block;
+    }
+    
+    .checkbox-container .checkmark:after {
+      left: 9px;
+      top: 5px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+    
+    .password-strength {
+      height: 4px;
+      border-radius: 2px;
+      margin-top: 4px;
+      transition: all 0.3s ease;
+    }
+    
+    .password-strength.weak {
+      background-color: #ef4444;
+      width: 25%;
+    }
+    
+    .password-strength.medium {
+      background-color: #f59e0b;
+      width: 50%;
+    }
+    
+    .password-strength.strong {
+      background-color: #10b981;
+      width: 100%;
+    }
+  </style>
 </head>
-<body class="min-h-screen flex items-center justify-center bg-gray-100">
-  <div class="w-full max-w-md bg-white p-8 rounded shadow">
-    <h1 class="text-2xl font-bold mb-6 text-center">Create Your Account</h1>
-    <form id="registerForm" class="space-y-4">
-      <input name="name" type="text" placeholder="Full Name" required
-             class="w-full border px-3 py-2 rounded" />
-      <input name="email" type="email" placeholder="Email" required
-             class="w-full border px-3 py-2 rounded" />
-      <input name="password" type="password" placeholder="Password" required
-             class="w-full border px-3 py-2 rounded" />
-      <button type="submit" class="w-full bg-primary hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
-        Register
-      </button>
-    </form>
-    <p class="mt-4 text-center">
-      Already have an account?
-      <a href="index.html" class="text-blue-600 hover:underline">Login</a>
-    </p>
+<body class="min-h-screen gradient-bg flex items-center justify-center p-4">
+  <div class="registration-card w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden">
+    <div class="p-8">
+      <!-- Progress Bar -->
+      <div class="mb-8">
+        <div class="flex justify-between mb-2">
+          <span class="text-sm font-medium text-gray-700">Registration Progress</span>
+          <span class="text-sm font-medium text-primary-600" id="progressText">Step 1 of 3</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 33%"></div>
+        </div>
+      </div>
+      
+      <!-- Logo and Title -->
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-calendar-check text-white text-2xl"></i>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-900">Join EventBuddy AI</h1>
+        <p class="text-gray-600 mt-2">Create your professional event planning account</p>
+      </div>
+      
+      <!-- Registration Form -->
+      <form id="registerForm" class="space-y-6">
+        <!-- Step 1: Personal Information -->
+        <div class="form-step active" id="step1">
+          <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+            <i class="fas fa-user-circle text-primary-600 mr-3"></i>
+            Personal Information
+          </h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">First Name *</label>
+              <input type="text" id="firstName" name="firstName" required
+                     class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+            </div>
+            <div>
+              <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">Last Name *</label>
+              <input type="text" id="lastName" name="lastName" required
+                     class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+            </div>
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+              <input type="email" id="email" name="email" required
+                     class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+            </div>
+            <div>
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+              <input type="tel" id="phone" name="phone" required
+                     class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+            </div>
+            <div>
+              <label for="company" class="block text-sm font-medium text-gray-700 mb-2">Company / Organization</label>
+              <input type="text" id="company" name="company"
+                     class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+            </div>
+            <div>
+              <label for="jobTitle" class="block text-sm font-medium text-gray-700 mb-2">Job Title</label>
+              <input type="text" id="jobTitle" name="jobTitle"
+                     class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+            </div>
+          </div>
+          
+          <div class="flex justify-between mt-8">
+            <div></div> <!-- Empty div for spacing -->
+            <button type="button" id="nextToStep2" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg flex items-center">
+              Continue <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Step 2: Account Security -->
+        <div class="form-step" id="step2">
+          <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+            <i class="fas fa-shield-alt text-primary-600 mr-3"></i>
+            Account Security
+          </h2>
+          
+          <div class="space-y-6">
+            <div>
+              <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password *</label>
+              <div class="relative">
+                <input type="password" id="password" name="password" required
+                       class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent pr-10">
+                <button type="button" id="togglePassword" class="absolute right-3 top-3 text-gray-500">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              <div id="passwordStrength" class="password-strength weak"></div>
+              <p class="text-xs text-gray-500 mt-2">Password must be at least 8 characters with uppercase, lowercase, number, and special character.</p>
+            </div>
+            
+            <div>
+              <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password *</label>
+              <div class="relative">
+                <input type="password" id="confirmPassword" name="confirmPassword" required
+                       class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent pr-10">
+                <button type="button" id="toggleConfirmPassword" class="absolute right-3 top-3 text-gray-500">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              <p id="passwordMatch" class="text-xs mt-2 hidden"></p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label for="securityQuestion" class="block text-sm font-medium text-gray-700 mb-2">Security Question *</label>
+                <select id="securityQuestion" name="securityQuestion" required
+                        class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                  <option value="">Select a security question</option>
+                  <option value="pet">What was the name of your first pet?</option>
+                  <option value="school">What was the name of your elementary school?</option>
+                  <option value="city">In what city were you born?</option>
+                  <option value="mother">What is your mother's maiden name?</option>
+                </select>
+              </div>
+              <div>
+                <label for="securityAnswer" class="block text-sm font-medium text-gray-700 mb-2">Security Answer *</label>
+                <input type="text" id="securityAnswer" name="securityAnswer" required
+                       class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex justify-between mt-8">
+            <button type="button" id="backToStep1" class="text-primary-600 font-semibold py-3 px-6 rounded-lg flex items-center hover:bg-primary-50 transition-colors">
+              <i class="fas fa-arrow-left mr-2"></i> Back
+            </button>
+            <button type="button" id="nextToStep3" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg flex items-center">
+              Continue <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Step 3: Declaration & Terms -->
+        <div class="form-step" id="step3">
+          <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+            <i class="fas fa-file-signature text-primary-600 mr-3"></i>
+            Declaration & Terms
+          </h2>
+          
+          <div class="space-y-6">
+            <!-- Terms and Conditions -->
+            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
+              <h3 class="font-bold text-gray-900 mb-3">Terms and Conditions</h3>
+              <div class="text-sm text-gray-700 space-y-3">
+                <p>By creating an account with EventBuddy AI, you agree to the following terms and conditions:</p>
+                
+                <p><strong>1. Account Responsibility</strong><br>
+                You are responsible for maintaining the confidentiality of your account and password and for restricting access to your computer. You agree to accept responsibility for all activities that occur under your account.</p>
+                
+                <p><strong>2. Service Usage</strong><br>
+                You agree to use EventBuddy AI services only for lawful purposes and in a way that does not infringe the rights of, restrict or inhibit anyone else's use and enjoyment of the platform.</p>
+                
+                <p><strong>3. Data Privacy</strong><br>
+                We collect and process personal data in accordance with our Privacy Policy. By registering, you consent to such processing and warrant that all data provided by you is accurate.</p>
+                
+                <p><strong>4. Intellectual Property</strong><br>
+                All content included on the platform, such as text, graphics, logos, images, as well as the compilation thereof, is the property of EventBuddy AI or its content suppliers and protected by copyright and other laws.</p>
+                
+                <p><strong>5. Termination</strong><br>
+                We may terminate or suspend your account and bar access to the Service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever and without limitation.</p>
+                
+                <p><strong>6. Limitation of Liability</strong><br>
+                In no event shall EventBuddy AI, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages.</p>
+                
+                <p><strong>7. Changes to Terms</strong><br>
+                We reserve the right, at our sole discretion, to modify or replace these Terms at any time. By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms.</p>
+              </div>
+            </div>
+            
+            <!-- Declaration -->
+            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <h3 class="font-bold text-gray-900 mb-3">Declaration</h3>
+              <div class="text-sm text-gray-700 space-y-3">
+                <p>I hereby declare that the information provided in this registration form is true, correct, and complete to the best of my knowledge.</p>
+                <p>I understand that providing false information may result in termination of my account and legal consequences.</p>
+                <p>I agree to receive communications from EventBuddy AI regarding my account, service updates, and promotional materials. I understand that I can opt out of promotional communications at any time.</p>
+              </div>
+            </div>
+            
+            <!-- Agreement Checkboxes -->
+            <div class="space-y-4">
+              <label class="checkbox-container text-gray-700">
+                I have read and agree to the Terms and Conditions *
+                <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                <span class="checkmark"></span>
+              </label>
+              
+              <label class="checkbox-container text-gray-700">
+                I accept the Declaration and confirm the information provided is accurate *
+                <input type="checkbox" id="agreeDeclaration" name="agreeDeclaration" required>
+                <span class="checkmark"></span>
+              </label>
+              
+              <label class="checkbox-container text-gray-700">
+                I would like to receive promotional emails and updates
+                <input type="checkbox" id="marketingConsent" name="marketingConsent">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="flex justify-between mt-8">
+            <button type="button" id="backToStep2" class="text-primary-600 font-semibold py-3 px-6 rounded-lg flex items-center hover:bg-primary-50 transition-colors">
+              <i class="fas fa-arrow-left mr-2"></i> Back
+            </button>
+            <button type="submit" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg flex items-center">
+              <i class="fas fa-user-plus mr-2"></i> Complete Registration
+            </button>
+          </div>
+        </div>
+      </form>
+      
+      <!-- Login Link -->
+      <div class="mt-8 text-center border-t pt-6">
+        <p class="text-gray-600">
+          Already have an account?
+          <a href="index.html" class="font-medium text-primary-600 hover:text-primary-500 ml-1">Sign in here</a>
+        </p>
+      </div>
+    </div>
   </div>
-  <script src="app.js"></script>
+
+  <script>
+    // DOM Elements
+    const form = document.getElementById('registerForm');
+    const steps = document.querySelectorAll('.form-step');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const passwordStrength = document.getElementById('passwordStrength');
+    const passwordMatch = document.getElementById('passwordMatch');
+    const togglePassword = document.getElementById('togglePassword');
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    
+    let currentStep = 1;
+    
+    // Function to update progress bar
+    function updateProgress() {
+      const progress = (currentStep / 3) * 100;
+      progressFill.style.width = `${progress}%`;
+      progressText.textContent = `Step ${currentStep} of 3`;
+    }
+    
+    // Function to show a specific step
+    function showStep(stepNumber) {
+      steps.forEach(step => step.classList.remove('active'));
+      document.getElementById(`step${stepNumber}`).classList.add('active');
+      currentStep = stepNumber;
+      updateProgress();
+    }
+    
+    // Password strength checker
+    function checkPasswordStrength(password) {
+      let strength = 0;
+      
+      // Length check
+      if (password.length >= 8) strength++;
+      
+      // Lowercase check
+      if (/[a-z]/.test(password)) strength++;
+      
+      // Uppercase check
+      if (/[A-Z]/.test(password)) strength++;
+      
+      // Number check
+      if (/[0-9]/.test(password)) strength++;
+      
+      // Special character check
+      if (/[^A-Za-z0-9]/.test(password)) strength++;
+      
+      // Update strength indicator
+      passwordStrength.className = 'password-strength';
+      if (password.length === 0) {
+        passwordStrength.classList.add('weak');
+      } else if (strength <= 2) {
+        passwordStrength.classList.add('weak');
+      } else if (strength <= 4) {
+        passwordStrength.classList.add('medium');
+      } else {
+        passwordStrength.classList.add('strong');
+      }
+    }
+    
+    // Password match checker
+    function checkPasswordMatch() {
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+      
+      if (confirmPassword.length === 0) {
+        passwordMatch.textContent = '';
+        passwordMatch.classList.add('hidden');
+        return;
+      }
+      
+      if (password === confirmPassword) {
+        passwordMatch.textContent = 'Passwords match';
+        passwordMatch.className = 'text-xs mt-2 text-green-600';
+      } else {
+        passwordMatch.textContent = 'Passwords do not match';
+        passwordMatch.className = 'text-xs mt-2 text-red-600';
+      }
+      passwordMatch.classList.remove('hidden');
+    }
+    
+    // Toggle password visibility
+    function togglePasswordVisibility(input, button) {
+      const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+      input.setAttribute('type', type);
+      
+      // Toggle eye icon
+      const icon = button.querySelector('i');
+      if (type === 'password') {
+        icon.className = 'fas fa-eye';
+      } else {
+        icon.className = 'fas fa-eye-slash';
+      }
+    }
+    
+    // Validate step 1 before proceeding
+    function validateStep1() {
+      const requiredFields = document.querySelectorAll('#step1 [required]');
+      let isValid = true;
+      
+      requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+          isValid = false;
+          field.classList.add('border-red-500');
+        } else {
+          field.classList.remove('border-red-500');
+        }
+      });
+      
+      return isValid;
+    }
+    
+    // Validate step 2 before proceeding
+    function validateStep2() {
+      const requiredFields = document.querySelectorAll('#step2 [required]');
+      let isValid = true;
+      
+      // Check required fields
+      requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+          isValid = false;
+          field.classList.add('border-red-500');
+        } else {
+          field.classList.remove('border-red-500');
+        }
+      });
+      
+      // Check password strength
+      if (passwordInput.value.length < 8) {
+        isValid = false;
+        passwordInput.classList.add('border-red-500');
+      } else {
+        passwordInput.classList.remove('border-red-500');
+      }
+      
+      // Check password match
+      if (passwordInput.value !== confirmPasswordInput.value) {
+        isValid = false;
+        confirmPasswordInput.classList.add('border-red-500');
+      } else {
+        confirmPasswordInput.classList.remove('border-red-500');
+      }
+      
+      return isValid;
+    }
+    
+    // Event Listeners
+    document.getElementById('nextToStep2').addEventListener('click', () => {
+      if (validateStep1()) {
+        showStep(2);
+      } else {
+        alert('Please fill in all required fields correctly.');
+      }
+    });
+    
+    document.getElementById('nextToStep3').addEventListener('click', () => {
+      if (validateStep2()) {
+        showStep(3);
+      } else {
+        alert('Please check your password and security information.');
+      }
+    });
+    
+    document.getElementById('backToStep1').addEventListener('click', () => {
+      showStep(1);
+    });
+    
+    document.getElementById('backToStep2').addEventListener('click', () => {
+      showStep(2);
+    });
+    
+    passwordInput.addEventListener('input', () => {
+      checkPasswordStrength(passwordInput.value);
+      checkPasswordMatch();
+    });
+    
+    confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+    
+    togglePassword.addEventListener('click', () => {
+      togglePasswordVisibility(passwordInput, togglePassword);
+    });
+    
+    toggleConfirmPassword.addEventListener('click', () => {
+      togglePasswordVisibility(confirmPasswordInput, toggleConfirmPassword);
+    });
+    
+    // Form submission
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      // Validate step 3
+      const agreeTerms = document.getElementById('agreeTerms').checked;
+      const agreeDeclaration = document.getElementById('agreeDeclaration').checked;
+      
+      if (!agreeTerms || !agreeDeclaration) {
+        alert('You must agree to the Terms and Conditions and Declaration to complete registration.');
+        return;
+      }
+      
+      // Collect form data
+      const formData = new FormData(form);
+      const userData = {};
+      
+      for (let [key, value] of formData.entries()) {
+        userData[key] = value;
+      }
+      
+      // Add registration date
+      userData.registrationDate = new Date().toISOString();
+      
+      // Store user data in localStorage (simulating database)
+      let users = JSON.parse(localStorage.getItem('EventBuddyUsers') || '[]');
+      
+      // Check if email already exists
+      const emailExists = users.some(user => user.email === userData.email);
+      if (emailExists) {
+        alert('An account with this email already exists. Please use a different email or login.');
+        return;
+      }
+      
+      // Add user to database
+      users.push(userData);
+      localStorage.setItem('EventBuddyUsers', JSON.stringify(users));
+      
+      // Show success message
+      alert('Registration successful! You can now login with your credentials.');
+      
+      // Redirect to login page
+      window.location.href = 'index.html';
+    });
+    
+    // Initialize the form
+    updateProgress();
+  </script>
 </body>
 </html>

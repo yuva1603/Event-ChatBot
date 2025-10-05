@@ -3,38 +3,136 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EventCraft AI – Chat</title>
+  <title>EventBuddy AI – Professional Event Assistant</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: { 
         extend: { 
           colors: { 
-            primary: '#2563eb',
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
             secondary: '#64748b' 
-          } 
+          },
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', 'sans-serif'],
+          }
         } 
       }
     }
   </script>
   <style>
-    .chat-img { max-width: 320px; max-height: 320px; border-radius: 0.5rem; }
-    #chatbox { scroll-behavior: smooth; }
-    .sender { justify-content: flex-end; }
-    .receiver { justify-content: flex-start; }
-    .sidebar-collapsed { width: 4rem; }
-    .sidebar-expanded { width: 16rem; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .chat-container {
+      height: calc(100vh - 140px);
+    }
+    
+    .message-user {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 18px 18px 4px 18px;
+    }
+    
+    .message-ai {
+      background: #f8fafc;
+      color: #334155;
+      border-radius: 18px 18px 18px 4px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .dark .message-ai {
+      background: #334155;
+      color: #e2e8f0;
+    }
+    
+    .typing-indicator {
+      display: inline-block;
+      position: relative;
+      width: 64px;
+      height: 16px;
+    }
+    
+    .typing-indicator span {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #9ca3af;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+    
+    .typing-indicator span:nth-child(1) {
+      left: 0;
+      animation-delay: 0s;
+    }
+    
+    .typing-indicator span:nth-child(2) {
+      left: 16px;
+      animation-delay: 0.2s;
+    }
+    
+    .typing-indicator span:nth-child(3) {
+      left: 32px;
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes typing {
+      0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.4;
+      }
+      30% {
+        transform: translateY(-10px);
+        opacity: 1;
+      }
+    }
+    
+    .sidebar {
+      transition: all 0.3s ease;
+    }
+    
+    .sidebar.collapsed {
+      width: 5rem;
+    }
+    
+    .sidebar.expanded {
+      width: 16rem;
+    }
+    
+    .suggestion-chip {
+      transition: all 0.2s ease;
+    }
+    
+    .suggestion-chip:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
   </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex">
-  <!-- Sidebar -->
-  <aside id="sidebar" class="sidebar-expanded bg-white dark:bg-gray-800 shadow-lg border-r dark:border-gray-700 flex flex-col transition-all duration-300">
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar expanded bg-white dark:bg-gray-800 shadow-lg border-r dark:border-gray-700 flex flex-col">
     <!-- Logo -->
     <div class="p-4 border-b dark:border-gray-700 flex items-center justify-between">
       <div class="flex items-center">
-        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm">EA</div>
-        <span id="logoText" class="ml-3 text-lg font-bold text-gray-900 dark:text-white">EventCraft AI</span>
+        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">EA</div>
+        <span id="logoText" class="ml-3 text-lg font-bold text-gray-900 dark:text-white">EventBuddy</span>
       </div>
       <button id="sidebarToggle" class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
         <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,189 +140,391 @@
         </svg>
       </button>
     </div>
-    <!-- Nav -->
+    
+    <!-- Navigation Menu -->
     <nav class="flex-1 p-4">
       <ul class="space-y-2">
         <li>
-          <div class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer" onclick="navigateTo('dashboard.html')">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6a2 2 0 01-2 2H10a2 2 0 01-2-2V5z"/>
-            </svg>
-            <span class="nav-text">Dashboard</span>
-          </div>
+          <a href="main.html" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+            <i class="fas fa-home text-gray-500 w-5 h-5 mr-3"></i>
+            <span class="nav-text">Home</span>
+          </a>
         </li>
         <li>
-          <div class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer" onclick="navigateTo('event.html')">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-            <span class="nav-text">Create Event</span>
-          </div>
+          <a href="events.html" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+            <i class="fas fa-calendar-alt text-gray-500 w-5 h-5 mr-3"></i>
+            <span class="nav-text">Events</span>
+          </a>
         </li>
         <li>
-          <div class="flex items-center px-4 py-3 bg-primary text-white rounded-lg transition-colors cursor-pointer" onclick="navigateTo('main.html')">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-            </svg>
-            <span class="nav-text">AI Chat</span>
-          </div>
-        </li>
-        <li>
-          <div class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer" onclick="navigateTo('explore.html')">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-            </svg>
+          <a href="explore.html" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+            <i class="fas fa-compass text-gray-500 w-5 h-5 mr-3"></i>
             <span class="nav-text">Explore</span>
-          </div>
+          </a>
+        </li>
+        <li>
+          <a href="dashboard.html" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+            <i class="fas fa-info-circle text-gray-500 w-5 h-5 mr-3"></i>
+            <span class="nav-text">My Account</span>
+          </a>
+        </li>
+        <li>
+          <a href="main.html" class="flex items-center px-4 py-3 bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded-lg transition-colors">
+            <i class="fas fa-robot text-primary-600 dark:text-primary-400 w-5 h-5 mr-3"></i>
+            <span class="nav-text font-medium">AI Assistant</span>
+          </a>
         </li>
       </ul>
+      
+      <!-- Quick Actions -->
+      <div class="mt-8">
+        <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-4">Quick Actions</h3>
+        <ul class="space-y-2">
+          <li>
+            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+              <i class="fas fa-plus-circle text-green-500 w-4 h-4 mr-3"></i>
+              <span class="nav-text">New Event</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+              <i class="fas fa-users text-blue-500 w-4 h-4 mr-3"></i>
+              <span class="nav-text">Guests</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+              <i class="fas fa-chart-bar text-purple-500 w-4 h-4 mr-3"></i>
+              <span class="nav-text">Analytics</span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </nav>
-    <!-- User -->
+    
+    <!-- User Profile Section -->
     <div class="p-4 border-t dark:border-gray-700">
       <div class="flex items-center">
-        <div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
-          <svg class="w-4 h-4 text-gray-600 dark:text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
-          </svg>
+        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+          TS
         </div>
         <div class="ml-3 nav-text">
           <p class="text-sm font-medium text-gray-900 dark:text-white">Team Schedulynx</p>
-          <p class="text-xs text-gray-500 dark:text-gray-400">Premium +</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Premium Plan</p>
         </div>
       </div>
-      <button onclick="logout()" class="mt-3 w-full flex items-center justify-center px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-        </svg>
+      <button id="logoutBtn" class="mt-3 w-full flex items-center justify-center px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg transition-colors">
+        <i class="fas fa-sign-out-alt mr-2"></i>
         <span class="nav-text">Logout</span>
       </button>
     </div>
   </aside>
 
-  <!-- Main Content -->
-  <div class="flex-1 flex flex-col">
-    <!-- Header -->
+  <!-- Main Content Area -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Top Navigation Bar -->
     <header class="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700 p-4">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-xl font-bold text-gray-900 dark:text-white">AI Chat Assistant</h1>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Ask me anything about event planning</p>
+          <h1 class="text-xl font-bold text-gray-900 dark:text-white">AI Event Assistant</h1>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Your intelligent event planning companion</p>
         </div>
-        <div class="flex items-center space-x-4">
-          <div class="flex items-center space-x-2">
+        <div class="flex items-center space-x-6">
+          <!-- Thinking Status -->
+          <div class="flex items-center space-x-2 bg-primary-50 dark:bg-primary-900/20 px-3 py-2 rounded-lg">
             <span class="w-2 h-2 bg-green-400 rounded-full"></span>
-            <span class="text-sm text-gray-500 dark:text-gray-400">Online</span>
+            <span class="text-sm font-medium text-primary-700 dark:text-primary-300">Analytical Thinking</span>
+          </div>
+          
+          <!-- User Profile -->
+          <div class="flex items-center space-x-3">
+            <div class="text-right">
+              <p class="text-sm font-medium text-gray-900 dark:text-white">Team Schedulynx</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Event Planner</p>
+            </div>
+            <div class="relative">
+              <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold cursor-pointer" id="profileMenuButton">
+                TS
+              </div>
+              <!-- Profile Dropdown (hidden by default) -->
+              <div id="profileMenu" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700 py-1 z-10">
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Profile</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Settings</a>
+                <div class="border-t dark:border-gray-700 my-1"></div>
+                <a href="#" class="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900">Logout</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- Chat -->
-    <main class="flex-1 flex flex-col p-4">
-      <div class="flex-1 max-w-4xl mx-auto w-full flex flex-col">
-        <!-- Welcome -->
-        <div id="welcomeMessage" class="flex-1 flex items-center justify-center">
-          <div class="text-center max-w-md">
-            <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-              </svg>
+    <!-- Main Chat Content -->
+    <main class="flex-1 overflow-hidden p-4">
+      <div class="max-w-4xl mx-auto h-full flex flex-col">
+        <!-- Welcome Screen (shown initially) -->
+        <div id="welcomeScreen" class="flex-1 flex items-center justify-center">
+          <div class="text-center max-w-lg">
+            <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i class="fas fa-robot text-white text-3xl"></i>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Welcome to EventCraft AI</h2>
-            <p class="text-gray-600 dark:text-gray-400 mb-6">I'm here to help you plan amazing events! You can ask me about:</p>
-            <div class="grid grid-cols-2 gap-2 text-sm">
-              <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg"><span class="text-blue-600 dark:text-blue-400">💰</span> Budget Planning</div>
-              <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg"><span class="text-green-600 dark:text-green-400">🎨</span> Decoration Ideas</div>
-              <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg"><span class="text-purple-600 dark:text-purple-400">🍽️</span> Menu Planning</div>
-              <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg"><span class="text-red-600 dark:text-red-400">📸</span> Event Visuals</div>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">EventBuddy AI Assistant</h2>
+            <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">I'm here to help you plan amazing events! Ask me anything about event planning, logistics, or creative ideas.</p>
+            
+            <div class="grid grid-cols-2 gap-3 mb-8">
+              <button class="suggestion-chip bg-white dark:bg-gray-800 p-4 rounded-xl border dark:border-gray-700 text-left transition-all">
+                <div class="text-blue-500 text-lg mb-2"><i class="fas fa-dollar-sign"></i></div>
+                <h3 class="font-medium text-gray-900 dark:text-white mb-1">Budget Planning</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Optimize your event budget</p>
+              </button>
+              <button class="suggestion-chip bg-white dark:bg-gray-800 p-4 rounded-xl border dark:border-gray-700 text-left transition-all">
+                <div class="text-green-500 text-lg mb-2"><i class="fas fa-users"></i></div>
+                <h3 class="font-medium text-gray-900 dark:text-white mb-1">Guest Management</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Handle invitations & RSVPs</p>
+              </button>
+              <button class="suggestion-chip bg-white dark:bg-gray-800 p-4 rounded-xl border dark:border-gray-700 text-left transition-all">
+                <div class="text-purple-500 text-lg mb-2"><i class="fas fa-utensils"></i></div>
+                <h3 class="font-medium text-gray-900 dark:text-white mb-1">Menu Planning</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Create perfect menus</p>
+              </button>
+              <button class="suggestion-chip bg-white dark:bg-gray-800 p-4 rounded-xl border dark:border-gray-700 text-left transition-all">
+                <div class="text-red-500 text-lg mb-2"><i class="fas fa-photo-video"></i></div>
+                <h3 class="font-medium text-gray-900 dark:text-white mb-1">Event Visuals</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Design & decoration ideas</p>
+              </button>
+            </div>
+            
+            <p class="text-sm text-gray-500 dark:text-gray-400">Try asking: "How can I plan a corporate event for 200 people?"</p>
+          </div>
+        </div>
+        
+        <!-- Chat Container (hidden initially) -->
+        <div id="chatContainer" class="hidden flex-1 flex flex-col">
+          <!-- Chat Messages Area -->
+          <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4 mb-4">
+            <!-- Messages will be inserted here dynamically -->
+          </div>
+          
+          <!-- Quick Suggestions -->
+          <div id="quickSuggestions" class="mb-4 px-4">
+            <div class="flex flex-wrap gap-2">
+              <button class="quick-suggestion bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-full text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                Wedding budget tips
+              </button>
+              <button class="quick-suggestion bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-full text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                Corporate event themes
+              </button>
+              <button class="quick-suggestion bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-full text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                Venue selection criteria
+              </button>
+              <button class="quick-suggestion bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-full text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                Event timeline template
+              </button>
+            </div>
+          </div>
+          
+          <!-- Input Area -->
+          <div class="bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 p-4 shadow-sm">
+            <form id="chatForm" class="flex items-end space-x-3">
+              <div class="flex-1 bg-gray-50 dark:bg-gray-700 rounded-lg border dark:border-gray-600 p-2">
+                <textarea 
+                  id="messageInput" 
+                  rows="1" 
+                  placeholder="Ask me anything about event planning..." 
+                  class="w-full bg-transparent border-0 resize-none focus:ring-0 focus:outline-none text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                ></textarea>
+              </div>
+              <button 
+                type="submit" 
+                class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-3 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all shadow-md hover:shadow-lg"
+              >
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </form>
+            <div class="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
+              EventBuddy AI can make mistakes. Consider checking important information.
             </div>
           </div>
         </div>
-        <!-- Chatbox -->
-        <div id="chatbox" class="hidden flex-1 overflow-y-auto bg-white dark:bg-gray-800 rounded-lg shadow border dark:border-gray-700 p-4 mb-4 space-y-4" style="min-height:400px; max-height: 60vh;"></div>
-        <!-- Input -->
-        <form id="chatInputForm" class="flex items-end gap-3 bg-white dark:bg-gray-800 p-4 rounded-lg shadow border dark:border-gray-700">
-          <textarea id="userInput" required rows="1" placeholder="Ask me anything about event planning…"
-            class="flex-1 px-4 py-3 resize-none border-0 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"></textarea>
-          <button type="submit"
-            class="bg-primary text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-blue-700 focus:ring-2 focus:ring-primary transition-colors flex items-center">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-            </svg>Send
-          </button>
-        </form>
       </div>
     </main>
   </div>
 
   <script>
-    // Sidebar toggle
+    // DOM Elements
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const logoText = document.getElementById('logoText');
+    const navTexts = document.querySelectorAll('.nav-text');
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const chatContainer = document.getElementById('chatContainer');
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const chatForm = document.getElementById('chatForm');
+    const quickSuggestions = document.getElementById('quickSuggestions');
+    const profileMenuButton = document.getElementById('profileMenuButton');
+    const profileMenu = document.getElementById('profileMenu');
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    // Sidebar Toggle
     let sidebarCollapsed = false;
-    document.getElementById('sidebarToggle').addEventListener('click', () => {
+    sidebarToggle.addEventListener('click', () => {
       sidebarCollapsed = !sidebarCollapsed;
-      document.getElementById('sidebar').classList.toggle('sidebar-collapsed', sidebarCollapsed);
-      document.getElementById('sidebar').classList.toggle('sidebar-expanded', !sidebarCollapsed);
-      document.getElementById('logoText').classList.toggle('hidden', sidebarCollapsed);
-      document.querySelectorAll('.nav-text').forEach(el => el.classList.toggle('hidden', sidebarCollapsed));
+      sidebar.classList.toggle('collapsed', sidebarCollapsed);
+      sidebar.classList.toggle('expanded', !sidebarCollapsed);
+      logoText.classList.toggle('hidden', sidebarCollapsed);
+      navTexts.forEach(el => el.classList.toggle('hidden', sidebarCollapsed));
     });
-
-    function navigateTo(page) { window.location.href = page; }
-    function scrollChatToBottom() { setTimeout(() => { const c = document.getElementById('chatbox'); c.scrollTop = c.scrollHeight; }, 100); }
-    function toggleWelcomeMessage(show) {
-      document.getElementById('welcomeMessage').classList.toggle('hidden', !show);
-      document.getElementById('chatbox').classList.toggle('hidden', show);
+    
+    // Profile Menu Toggle
+    profileMenuButton.addEventListener('click', () => {
+      profileMenu.classList.toggle('hidden');
+    });
+    
+    // Close profile menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!profileMenuButton.contains(e.target) && !profileMenu.contains(e.target)) {
+        profileMenu.classList.add('hidden');
+      }
+    });
+    
+    // Logout Function
+    logoutBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to logout?')) {
+        // In a real app, you would clear tokens and redirect
+        window.location.href = 'login.html';
+      }
+    });
+    
+    // Auto-resize textarea
+    messageInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
+    });
+    
+    // Chat functionality
+    let conversationStarted = false;
+    
+    // Add message to chat
+    function addMessage(content, isUser = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+      
+      const messageBubble = document.createElement('div');
+      messageBubble.className = `max-w-[80%] px-4 py-3 ${isUser ? 'message-user' : 'message-ai'}`;
+      messageBubble.innerHTML = content;
+      
+      messageDiv.appendChild(messageBubble);
+      chatMessages.appendChild(messageDiv);
+      
+      // Scroll to bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-    async function getAIResponse(message) {
-      await new Promise(r => setTimeout(r, 800));
-      if (message.toLowerCase().includes('wedding')) {
-        return { type:'image', content:'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=400&q=80', caption:"Beautiful wedding setup" };
-      } else {
-        return { type:'text', content:"Here's some advice for your event planning!" };
+    
+    // Show typing indicator
+    function showTypingIndicator() {
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'flex justify-start mb-4';
+      typingDiv.id = 'typing-indicator';
+      
+      const typingBubble = document.createElement('div');
+      typingBubble.className = 'max-w-[80%] px-4 py-3 message-ai';
+      
+      const typingContent = document.createElement('div');
+      typingContent.className = 'flex items-center';
+      typingContent.innerHTML = `
+        <div class="typing-indicator mr-2">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <span class="text-gray-500 dark:text-gray-400 text-sm">EventBuddy AI is thinking...</span>
+      `;
+      
+      typingBubble.appendChild(typingContent);
+      typingDiv.appendChild(typingBubble);
+      chatMessages.appendChild(typingDiv);
+      
+      // Scroll to bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    // Hide typing indicator
+    function hideTypingIndicator() {
+      const typingIndicator = document.getElementById('typing-indicator');
+      if (typingIndicator) {
+        typingIndicator.remove();
       }
     }
-    function addMessageToChat(content, sender='user', caption='') {
-      const box=document.getElementById('chatbox');
-      const w=document.createElement('div');
-      w.className=`flex ${sender==='ai'?'justify-start':'justify-end'} mb-4`;
-      const msgClass= sender==='ai'?'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white':'bg-primary text-white';
-      w.innerHTML=`<div class="max-w-[75%] rounded-lg px-4 py-3 ${msgClass} whitespace-pre-line">${content}${caption?`<div class="text-xs opacity-75 mt-2">${caption}</div>`:''}</div>`;
-      box.appendChild(w);
-      scrollChatToBottom();
+    
+    // Generate AI response
+    function generateAIResponse(userMessage) {
+      // In a real application, this would be an API call to your backend
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          let response = '';
+          
+          if (userMessage.toLowerCase().includes('budget')) {
+            response = "For event budgeting, I recommend allocating funds in these proportions:<br><br>• <strong>Venue & Catering (40-50%)</strong><br>• <strong>Entertainment & Speakers (10-15%)</strong><br>• <strong>Marketing & Promotion (10-15%)</strong><br>• <strong>Decor & Atmosphere (10-15%)</strong><br>• <strong>Contingency (10%)</strong><br><br>Would you like me to create a detailed budget spreadsheet for your specific event type?";
+          } else if (userMessage.toLowerCase().includes('wedding')) {
+            response = "Wedding planning is exciting! Here are key considerations:<br><br>• <strong>Timeline:</strong> Start planning 12-18 months in advance<br>• <strong>Guest List:</strong> Finalize early as it impacts venue and budget<br>• <strong>Vendors:</strong> Book photographers, caterers, and florists 8-12 months ahead<br>• <strong>Theme:</strong> Choose a cohesive color palette and style<br><br>I can help you create a detailed wedding planning checklist. What's your wedding date?";
+          } else if (userMessage.toLowerCase().includes('corporate')) {
+            response = "Corporate events require careful planning. Key elements include:<br><br>• <strong>Objectives:</strong> Define clear goals (networking, product launch, training)<br>• <strong>Audience:</strong> Tailor the experience to attendees' roles and interests<br>• <strong>Brand Alignment:</strong> Ensure all elements reflect company values<br>• <strong>ROI Measurement:</strong> Plan how to track success metrics<br><br>What type of corporate event are you planning?";
+          } else {
+            response = "I'd be happy to help with your event planning needs! To give you the most relevant advice, could you tell me:<br><br>1. What type of event are you planning?<br>2. Approximately how many guests?<br>3. What's your budget range?<br>4. Do you have a date or venue selected?<br><br>The more details you provide, the better I can assist you!";
+          }
+          
+          resolve(response);
+        }, 1500);
+      });
     }
-    function addImageToChat(url, caption='') {
-      const box=document.getElementById('chatbox');
-      const w=document.createElement('div');
-      w.className='flex justify-start mb-4';
-      w.innerHTML=`<div class="max-w-[75%]"><img src="${url}" class="chat-img shadow-lg border border-gray-200 dark:border-gray-600 mb-2"><div class="text-sm text-gray-600 dark:text-gray-400 px-2">${caption}</div></div>`;
-      box.appendChild(w);
-      scrollChatToBottom();
-    }
-    let msgCount=0;
-    document.getElementById('chatInputForm').addEventListener('submit',async e=>{
+    
+    // Handle form submission
+    chatForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const inp=document.getElementById('userInput'), msg=inp.value.trim();
-      if(!msg) return;
-      if(msgCount===0) toggleWelcomeMessage(false);
-      msgCount++;
-      addMessageToChat(msg,'user');
-      inp.value=''; inp.style.height='auto';
-      const thinking=addMessageToChat('🤔 Thinking...','ai');
-      try{
-        const resp=await getAIResponse(msg);
-        document.querySelectorAll('.bg-gray-100').forEach(el=>{ if(el.textContent.includes('Thinking')) el.parentElement.remove(); });
-        if(resp.type==='text') addMessageToChat(resp.content,'ai');
-        else addImageToChat(resp.content,resp.caption);
-      }catch{
-        addMessageToChat('Error, please try again.','ai');
+      
+      const message = messageInput.value.trim();
+      if (!message) return;
+      
+      // Start conversation if this is the first message
+      if (!conversationStarted) {
+        conversationStarted = true;
+        welcomeScreen.classList.add('hidden');
+        chatContainer.classList.remove('hidden');
+      }
+      
+      // Add user message
+      addMessage(message, true);
+      
+      // Clear input
+      messageInput.value = '';
+      messageInput.style.height = 'auto';
+      
+      // Show typing indicator
+      showTypingIndicator();
+      
+      // Generate and add AI response
+      try {
+        const aiResponse = await generateAIResponse(message);
+        hideTypingIndicator();
+        addMessage(aiResponse, false);
+      } catch (error) {
+        hideTypingIndicator();
+        addMessage("I'm sorry, I encountered an error. Please try again.", false);
       }
     });
-    document.getElementById('userInput').addEventListener('input',function(){
-      this.style.height='auto'; this.style.height=this.scrollHeight+'px';
+    
+    // Quick suggestion buttons
+    document.querySelectorAll('.suggestion-chip, .quick-suggestion').forEach(button => {
+      button.addEventListener('click', () => {
+        const text = button.textContent.trim();
+        messageInput.value = text;
+        chatForm.dispatchEvent(new Event('submit'));
+      });
     });
-    document.getElementById('userInput').focus();
-    function logout(){ localStorage.removeItem('authToken'); window.location.href='login.html'; }
+    
+    // Focus on input when chat container is shown
+    messageInput.focus();
   </script>
-  <script src="app.js"></script>
 </body>
 </html>
