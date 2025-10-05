@@ -41,7 +41,7 @@
     // Logout function
     function logout() {
       localStorage.removeItem('authToken');
-      window.location.href = 'login.html'; // redirect to login
+      window.location.href = 'index.html'; // redirect to login
     }
 
     // Function to append message
@@ -87,7 +87,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       const token = localStorage.getItem('authToken');
       if (!token) {
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
       }
     });
   </script>

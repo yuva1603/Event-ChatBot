@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       // TODO: Call backend registration API
       alert("Registration successful!");
-      window.location.href = "login.html";
+      window.location.href = "index.html";
     });
   }
 
