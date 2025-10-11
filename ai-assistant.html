@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant - EventBuddy Copilot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-color: #ff6b6b;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --sidebar-width: 250px;
+            --sidebar-collapsed-width: 70px;
+            --header-height: 70px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            height: 100vh;
+            position: fixed;
+            transition: var(--transition);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            height: var(--header-height);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .sidebar.collapsed .logo-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .toggle-btn:hover {
+            transform: rotate(180deg);
+        }
+
+        .sidebar-menu {
+            padding: 15px 0;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--accent-color);
+        }
+
+        .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-left-color: white;
+        }
+
+        .menu-item i {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .menu-text {
+            transition: var(--transition);
+        }
+
+        .sidebar.collapsed .menu-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            transition: var(--transition);
+        }
+
+        .main-content.expanded {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+
+        /* Header Styles */
+        .header {
+            height: var(--header-height);
+            background-color: white;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* AI Assistant Styles */
+        .ai-assistant-container {
+            display: flex;
+            height: calc(100vh - var(--header-height));
+        }
+
+        .ai-main {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ai-welcome {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .ai-welcome h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .ai-welcome p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .ai-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .ai-feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .ai-feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .ai-feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(106, 17, 203, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+
+        .ai-feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+        .ai-feature-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .ai-chat-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ai-chat-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .ai-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .ai-chat-header h3 {
+            font-size: 1.3rem;
+            color: var(--dark-color);
+        }
+
+        .ai-chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-height: 400px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 15px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.ai {
+            align-self: flex-start;
+            background: #f0f2f5;
+            color: var(--dark-color);
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .ai-chat-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .ai-chat-input input {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .ai-chat-input input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
+            outline: none;
+        }
+
+        .ai-chat-input button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-chat-input button:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-2px);
+        }
+
+        /* Right Sidebar Styles */
+        .right-sidebar {
+            width: 350px;
+            background: white;
+            border-left: 1px solid #eee;
+            height: calc(100vh - var(--header-height));
+            position: fixed;
+            right: 0;
+            top: var(--header-height);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .right-sidebar.collapsed {
+            transform: translateX(100%);
+        }
+
+        .right-sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .right-sidebar-header h3 {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+        }
+
+        .right-sidebar-toggle {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #666;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .right-sidebar-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .right-sidebar-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .help-section {
+            margin-bottom: 30px;
+        }
+
+        .help-section h4 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .help-section h4 i {
+            color: var(--primary-color);
+        }
+
+        .help-item {
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .help-item:hover {
+            background: #e9ecef;
+        }
+
+        .help-item.active {
+            background: rgba(106, 17, 203, 0.1);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .support-contact {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .support-contact h4 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .support-contact p {
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .support-contact button {
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .support-contact button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .right-sidebar {
+                width: 300px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: var(--sidebar-collapsed-width);
+            }
+
+            .sidebar .logo-text,
+            .sidebar .menu-text {
+                opacity: 0;
+                width: 0;
+                overflow: hidden;
+            }
+
+            .main-content {
+                margin-left: var(--sidebar-collapsed-width);
+            }
+
+            .sidebar.expanded {
+                width: var(--sidebar-width);
+            }
+
+            .sidebar.expanded .logo-text,
+            .sidebar.expanded .menu-text {
+                opacity: 1;
+                width: auto;
+            }
+
+            .main-content.compressed {
+                margin-left: var(--sidebar-width);
+            }
+
+            .right-sidebar {
+                width: 280px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ai-features {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-main {
+                padding: 15px;
+            }
+
+            .header {
+                padding: 0 15px;
+            }
+
+            .right-sidebar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div class="logo-text">EventBuddy</div>
+                </div>
+                <button class="toggle-btn" id="toggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-item" data-tab="home">
+                    <i class="fas fa-home"></i>
+                    <div class="menu-text">Home / Event Copilot</div>
+                </div>
+                <div class="menu-item" data-tab="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <div class="menu-text">Dashboard / My Account</div>
+                </div>
+                <div class="menu-item" data-tab="events">
+                    <i class="fas fa-calendar-check"></i>
+                    <div class="menu-text">Events</div>
+                </div>
+                <div class="menu-item" data-tab="explore">
+                    <i class="fas fa-compass"></i>
+                    <div class="menu-text">Explore</div>
+                </div>
+                <div class="menu-item active" data-tab="ai-assistant">
+                    <i class="fas fa-robot"></i>
+                    <div class="menu-text">AI Assistant</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <!-- Header -->
+            <div class="header">
+                <div class="page-title" id="pageTitle">AI Assistant</div>
+                <div class="user-info">
+                    <div class="user-avatar">JS</div>
+                    <div>John Smith</div>
+                </div>
+            </div>
+
+            <!-- AI Assistant Content -->
+            <div class="ai-assistant-container">
+                <div class="ai-main">
+                    <div class="ai-welcome">
+                        <h1>EventBuddy AI Assistant</h1>
+                        <p>Your intelligent event planning partner. Get personalized recommendations, solve problems, and create amazing events with AI-powered assistance.</p>
+                    </div>
+
+                    <div class="ai-features">
+                        <div class="ai-feature-card">
+                            <div class="ai-feature-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h3>Creative Ideas</h3>
+                            <p>Get unique theme ideas, decoration concepts, and creative solutions for your events.</p>
+                        </div>
+                        <div class="ai-feature-card">
+                            <div class="ai-feature-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <h3>Budget Planning</h3>
+                            <p>Optimize your budget with AI-powered cost estimates and allocation recommendations.</p>
+                        </div>
+                        <div class="ai-feature-card">
+                            <div class="ai-feature-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <h3>Task Management</h3>
+                            <p>Stay on track with personalized checklists and timeline management for your events.</p>
+                        </div>
+                    </div>
+
+                    <div class="ai-chat-container">
+                        <div class="ai-chat-header">
+                            <div class="ai-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div>
+                                <h3>EventBuddy AI</h3>
+                                <p>Online - Ready to help</p>
+                            </div>
+                        </div>
+
+                        <div class="ai-chat-messages" id="chatMessages">
+                            <div class="message ai">
+                                <p>Hello! I'm your EventBuddy AI Assistant. How can I help you plan your perfect event today?</p>
+                                <div class="message-time">10:00 AM</div>
+                            </div>
+                            <div class="message user">
+                                <p>I need help planning a wedding for 150 guests with a beach theme.</p>
+                                <div class="message-time">10:02 AM</div>
+                            </div>
+                            <div class="message ai">
+                                <p>Great choice! Beach weddings are beautiful. I can help you with venue selection, decor ideas, catering options, and timeline planning. What's your budget range?</p>
+                                <div class="message-time">10:02 AM</div>
+                            </div>
+                        </div>
+
+                        <div class="ai-chat-input">
+                            <input type="text" id="chatInput" placeholder="Ask me anything about event planning...">
+                            <button id="sendMessage">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar - Chat Support & Help -->
+        <div class="right-sidebar" id="rightSidebar">
+            <div class="right-sidebar-header">
+                <h3>Help & Support</h3>
+                <button class="right-sidebar-toggle" id="toggleRightSidebar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="right-sidebar-content">
+                <div class="help-section">
+                    <h4><i class="fas fa-question-circle"></i> Quick Help</h4>
+                    <div class="help-item active">How to create a new event</div>
+                    <div class="help-item">Budget planning tips</div>
+                    <div class="help-item">Venue selection guide</div>
+                    <div class="help-item">Managing guest lists</div>
+                    <div class="help-item">Timeline creation</div>
+                </div>
+
+                <div class="help-section">
+                    <h4><i class="fas fa-graduation-cap"></i> Tutorials</h4>
+                    <div class="help-item">Getting started with EventBuddy</div>
+                    <div class="help-item">Using the AI Assistant</div>
+                    <div class="help-item">Budget management</div>
+                    <div class="help-item">Vendor coordination</div>
+                </div>
+
+                <div class="support-contact">
+                    <h4>Need Human Help?</h4>
+                    <p>Our event specialists are available to assist you</p>
+                    <button>
+                        <i class="fas fa-headset"></i> Contact Support
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const toggleSidebar = document.getElementById('toggleSidebar');
+        const rightSidebar = document.getElementById('rightSidebar');
+        const toggleRightSidebar = document.getElementById('toggleRightSidebar');
+        const menuItems = document.querySelectorAll('.menu-item');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendMessage = document.getElementById('sendMessage');
+        const helpItems = document.querySelectorAll('.help-item');
+
+        // Toggle Sidebar
+        toggleSidebar.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        });
+
+        // Toggle Right Sidebar
+        toggleRightSidebar.addEventListener('click', () => {
+            rightSidebar.classList.toggle('collapsed');
+        });
+
+        // Switch Tabs
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Remove active class from all menu items
+                menuItems.forEach(i => i.classList.remove('active'));
+                // Add active class to clicked menu item
+                item.classList.add('active');
+                
+                // Update page title
+                updatePageTitle(item.dataset.tab);
+            });
+        });
+
+        // Update Page Title based on active tab
+        function updatePageTitle(tab) {
+            const titles = {
+                'home': 'Event Copilot',
+                'dashboard': 'My Account Dashboard',
+                'events': 'My Events',
+                'explore': 'Explore Events',
+                'ai-assistant': 'AI Assistant'
+            };
+            document.getElementById('pageTitle').textContent = titles[tab] || 'EventBuddy Copilot';
+        }
+
+        // Chat functionality
+        sendMessage.addEventListener('click', sendChatMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        });
+
+        function sendChatMessage() {
+            const message = chatInput.value.trim();
+            if (message === '') return;
+
+            // Add user message
+            addMessage(message, 'user');
+            chatInput.value = '';
+
+            // Simulate AI response after a delay
+            setTimeout(() => {
+                const responses = [
+                    "I can help with that! Based on your event details, I recommend considering outdoor venues with backup options for weather.",
+                    "That's an interesting idea. Let me find some vendors in your area that specialize in that type of event.",
+                    "Great question! For a budget of that size, I'd allocate approximately 40% to venue, 30% to catering, and 30% to other expenses.",
+                    "I've added that to your event checklist. Would you like me to set reminders for any of these tasks?",
+                    "Based on similar events, I suggest sending save-the-dates 3 months in advance and formal invitations 6 weeks before the event."
+                ];
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                addMessage(randomResponse, 'ai');
+            }, 1000);
+        }
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender);
+            
+            const messageText = document.createElement('p');
+            messageText.textContent = text;
+            
+            const messageTime = document.createElement('div');
+            messageTime.classList.add('message-time');
+            messageTime.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            messageDiv.appendChild(messageText);
+            messageDiv.appendChild(messageTime);
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Help items functionality
+        helpItems.forEach(item => {
+            item.addEventListener('click', () => {
+                helpItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                
+                // Add a message based on the help topic
+                const topic = item.textContent;
+                addMessage(`I need help with: ${topic}`, 'user');
+                
+                setTimeout(() => {
+                    addMessage(`I can definitely help you with ${topic.toLowerCase()}. Let me provide some guidance...`, 'ai');
+                }, 1000);
+            });
+        });
+
+        // Responsive sidebar behavior
+        function handleResize() {
+            if (window.innerWidth <= 992) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('expanded');
+            } else {
+                sidebar.classList.remove('collapsed');
+                mainContent.classList.remove('expanded');
+            }
+        }
+
+        // Initial call and event listener for window resize
+        handleResize();
+        window.addEventListener('resize', handleResize);
+    </script>
+</body>
+</html>
